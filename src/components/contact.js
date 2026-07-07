@@ -15,7 +15,7 @@ export function renderContact(container) {
     
     mailingAddress: { en: "Mailing Address", fr: "Adresse postale" },
     corpPhone: { en: "Corporate Phone", fr: "Téléphone Corporate" },
-    dedicatedEmails: { en: "Dedicated Emails", fr: "Courriels dédiés" },
+    dedicatedEmails: { en: "Email Address", fr: "Adresse E-mail" },
     travelLabel: { en: "Travel:", fr: "Voyage :" },
     insLabel: { en: "Insurance:", fr: "Assurance :" },
     corpLabel: { en: "Corporate:", fr: "Holding :" },
@@ -93,7 +93,7 @@ export function renderContact(container) {
               <i class="fa-solid fa-phone-volume gold-text"></i>
               <div>
                 <h4>${t(text.corpPhone)}</h4>
-                <p>+1 (410) 555-0190 <span class="text-muted">(Baltimore HQ)</span></p>
+                <p>+1 (202) 386-2273 <span class="text-muted">(Baltimore HQ)</span></p>
               </div>
             </div>
             
@@ -101,9 +101,7 @@ export function renderContact(container) {
               <i class="fa-solid fa-envelope-open-text gold-text"></i>
               <div>
                 <h4>${t(text.dedicatedEmails)}</h4>
-                <p><strong>${t(text.travelLabel)}</strong> travel@snglobalgroup.com</p>
-                <p><strong>${t(text.insLabel)}</strong> insurance@snglobalgroup.com</p>
-                <p><strong>${t(text.corpLabel)}</strong> corporate@snglobalgroup.com</p>
+                <p><a href="mailto:contact@snglobalgroup.online" class="gold-text-hover" style="color: inherit; text-decoration: none;">contact@snglobalgroup.online</a></p>
               </div>
             </div>
           </div>

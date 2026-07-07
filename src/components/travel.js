@@ -29,9 +29,9 @@ export function renderTravel(container) {
 
     filterBudget: { en: "Budget Category", fr: "Catégorie de Budget" },
     allBudgets: { en: "All budgets", fr: "Tous budgets" },
-    budEco: { en: "Discovery (Budget)", fr: "Découverte (Économique)" },
-    budStd: { en: "Selection (Standard)", fr: "Sélection (Standard)" },
-    budPrem: { en: "Prestige (Premium)", fr: "Prestige (Premium)" },
+    budEco: { en: "Discovery (< $3,000)", fr: "Découverte (< 3 000 $)" },
+    budStd: { en: "Selection ($3,000 - $6,000)", fr: "Sélection (3 000 $ - 6 000 $)" },
+    budPrem: { en: "Prestige (> $6,000)", fr: "Prestige (> 6 000 $)" },
 
     btnMore: { en: "Learn more", fr: "En savoir plus" },
     perkTitle: { en: "Included Prestigious Benefits", fr: "Prestations de Prestige Incluses" },

@@ -199,7 +199,7 @@ export const blogPosts = [
       en: `Many tourists mistakenly believe that their standard credit card or national health insurance is enough to cover a vacation in the United States. This is a major miscalculation that can turn a dream vacation into a financial nightmare. Here is why temporary **USA insurance** is essential.
 
       <h3>The limits of credit cards</h3>
-      Although premium credit cards include travel assistance guarantees, the reimbursement ceilings for medical expenses are often very low (sometimes limited to €11,000 or €30,000). In the United States, these amounts are exhausted after just a few hours in the ER. Moreover, the deductibles applied are often high.
+      Although premium credit cards include travel assistance guarantees, the reimbursement ceilings for medical expenses are often very low (sometimes limited to $12,000 or $33,000). In the United States, these amounts are exhausted after just a few hours in the ER. Moreover, the deductibles applied are often high.
       
       <h3>What does a dedicated travel insurance cover?</h3>
       A real USA travel insurance policy like those offered by SN Global Insurance covers:
@@ -214,7 +214,7 @@ export const blogPosts = [
       fr: `Beaucoup de touristes pensent à tort que leur carte bancaire classique ou leur assurance maladie nationale suffit pour couvrir des vacances aux États-Unis. C'est une erreur de calcul majeure qui peut transformer des vacances de rêve en cauchemar financier. Explications sur l'importance d'une <strong>assurance USA</strong> temporaire.
 
       <h3>Les limites des cartes bancaires</h3>
-      Bien que les cartes bancaires haut de gamme incluent des garanties d'assistance voyage, les plafonds de remboursement des frais médicaux sont souvent très bas (parfois limités à 11 000 € ou 30 000 €). Aux États-Unis, ces montants sont épuisés après seulement quelques heures passées aux urgences. De plus, les franchises appliquées sont souvent élevées.
+      Bien que les cartes bancaires haut de gamme incluent des garanties d'assistance voyage, les plafonds de remboursement des frais médicaux sont souvent très bas (parfois limités à 12 000 $ ou 33 000 $). Aux États-Unis, ces montants sont épuisés après seulement quelques heures passées aux urgences. De plus, les franchises appliquées sont souvent élevées.
       
       <h3>Que couvre une assurance voyage dédiée ?</h3>
       Une véritable assurance voyage USA comme celles proposées par SN Global Insurance couvre :

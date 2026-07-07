@@ -13,8 +13,8 @@ export const destinations = [
     experienceType: "aventure",
     priceRange: "premium",
     priceText: {
-      en: "From €6,500 / person",
-      fr: "À partir de 6 500 € / pers."
+      en: "From $6,500 / person",
+      fr: "À partir de 6 500 $ / pers."
     },
     duration: {
       en: "10 days / 8 nights",
@@ -50,8 +50,8 @@ export const destinations = [
     experienceType: "culture",
     priceRange: "premium",
     priceText: {
-      en: "From €5,900 / person",
-      fr: "À partir de 5 900 € / pers."
+      en: "From $5,900 / person",
+      fr: "À partir de 5 900 $ / pers."
     },
     duration: {
       en: "12 days / 10 nights",
@@ -87,8 +87,8 @@ export const destinations = [
     experienceType: "detente",
     priceRange: "premium",
     priceText: {
-      en: "From €8,200 / person",
-      fr: "À partir de 8 200 € / pers."
+      en: "From $8,200 / person",
+      fr: "À partir de 8 200 $ / pers."
     },
     duration: {
       en: "9 days / 7 nights",
@@ -124,8 +124,8 @@ export const destinations = [
     experienceType: "aventure",
     priceRange: "standard",
     priceText: {
-      en: "From €3,800 / person",
-      fr: "À partir de 3 800 € / pers."
+      en: "From $3,800 / person",
+      fr: "À partir de 3 800 $ / pers."
     },
     duration: {
       en: "8 days / 7 nights",
@@ -161,8 +161,8 @@ export const destinations = [
     experienceType: "luxe",
     priceRange: "standard",
     priceText: {
-      en: "From €4,200 / person",
-      fr: "À partir de 4 200 € / pers."
+      en: "From $4,200 / person",
+      fr: "À partir de 4 200 $ / pers."
     },
     duration: {
       en: "7 days / 6 nights",
@@ -198,8 +198,8 @@ export const destinations = [
     experienceType: "aventure",
     priceRange: "standard",
     priceText: {
-      en: "From €4,500 / person",
-      fr: "À partir de 4 500 € / pers."
+      en: "From $4,500 / person",
+      fr: "À partir de 4 500 $ / pers."
     },
     duration: {
       en: "14 days / 12 nights",
@@ -235,8 +235,8 @@ export const destinations = [
     experienceType: "luxe",
     priceRange: "premium",
     priceText: {
-      en: "From €7,100 / person",
-      fr: "À partir de 7 100 € / pers."
+      en: "From $7,100 / person",
+      fr: "À partir de 7 100 $ / pers."
     },
     duration: {
       en: "6 days / 5 nights",
@@ -272,8 +272,8 @@ export const destinations = [
     experienceType: "culture",
     priceRange: "economique",
     priceText: {
-      en: "From €2,900 / person",
-      fr: "À partir de 2 900 € / pers."
+      en: "From $2,900 / person",
+      fr: "À partir de 2 900 $ / pers."
     },
     duration: {
       en: "8 days / 7 nights",

@@ -296,6 +296,10 @@ function updateStaticTranslations() {
 // Router function
 function router() {
   const container = document.getElementById('app');
+  
+  // Trigger page transition fade-in
+  container.classList.remove('page-enter-active');
+  
   let hash = window.location.hash || '#/';
   
   let path = hash.replace(/^#/, '');
@@ -421,6 +425,11 @@ function router() {
 
   // Fade cards/sections in as the user scrolls
   initScrollReveal(container);
+
+  // Finalize page transition
+  setTimeout(() => {
+    container.classList.add('page-enter-active');
+  }, 40);
 }
 
 // Support Ticketing Local System
