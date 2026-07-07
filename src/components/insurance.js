@@ -26,6 +26,10 @@ export function renderInsurance(container) {
     limitLife: { en: "Guaranteed Death Benefit:", fr: "Capital Décès Garanti :" },
     btnSelect: { en: "Select this plan", fr: "Sélectionner ce plan" },
 
+    solutionsBadge: { en: "Complete Portfolio", fr: "Gamme Complète" },
+    solutionsTitle: { en: "Our Insurance Solutions", fr: "Nos Solutions d'Assurance" },
+    solutionsDesc: { en: "We offer a wide range of insurance solutions to help you protect your family, your assets, and your future.", fr: "Nous proposons une large gamme de solutions d'assurances pour vous aider à protéger votre famille, vos biens et votre avenir." },
+
     badgeCalc: { en: "Premium Calculator", fr: "Calculateur de Prime" },
     titleCalc: { en: "Simulate your Premium in Real Time", fr: "Simulez votre Prime en Temps Réel" },
     descCalc: { en: "Configure your criteria below and get an instant estimate of your insurance coverage.", fr: "Configurez vos critères ci-dessous et obtenez une estimation instantanée de votre couverture d'assurance." },
@@ -57,6 +61,81 @@ export function renderInsurance(container) {
     noLifeDeductible: { en: "No death deductible", fr: "Aucune franchise décès" },
     guaranteedCapital: { en: "Guaranteed capital", fr: "Capital garanti" }
   };
+
+  const insuranceSolutions = [
+    {
+      id: "life",
+      icon: "fa-solid fa-heart-pulse",
+      title: { en: "Life Insurance", fr: "Assurance Vie" },
+      desc: { en: "Provide financial security for your loved ones when they need it most.", fr: "Garantissez la sécurité financière de vos proches lorsqu'ils en ont le plus besoin." }
+    },
+    {
+      id: "health",
+      icon: "fa-solid fa-square-plus",
+      title: { en: "Health Insurance", fr: "Assurance Santé" },
+      desc: { en: "Get the coverage you need for a healthier and worry-free life.", fr: "Obtenez la couverture santé nécessaire pour une vie plus saine et sereine." }
+    },
+    {
+      id: "auto",
+      icon: "fa-solid fa-car-side",
+      title: { en: "Auto Insurance", fr: "Assurance Auto" },
+      desc: { en: "Protect your vehicle and yourself on the road with confidence.", fr: "Protégez votre véhicule et vous-même sur la route en toute confiance." }
+    },
+    {
+      id: "homeowners",
+      icon: "fa-solid fa-house-chimney",
+      title: { en: "Homeowners / Renters Insurance", fr: "Assurance Habitation / Locataire" },
+      desc: { en: "Protect your home and belongings from life's unexpected events.", fr: "Protégez votre maison et vos biens contre les imprévus de la vie." }
+    },
+    {
+      id: "business",
+      icon: "fa-solid fa-briefcase",
+      title: { en: "Business Insurance", fr: "Assurance Entreprise" },
+      desc: { en: "Protect your business, employees, and income so you can grow with peace of mind.", fr: "Protégez votre entreprise, vos employés et vos revenus pour croître en toute sérénité." }
+    },
+    {
+      id: "medicare",
+      icon: "fa-solid fa-stethoscope",
+      title: { en: "Medicare Insurance", fr: "Assurance Medicare" },
+      desc: { en: "Find the right Medicare plan that fits your healthcare needs and budget.", fr: "Trouvez le plan Medicare adapté à vos besoins de santé et à votre budget." }
+    },
+    {
+      id: "disability",
+      icon: "fa-solid fa-wheelchair",
+      title: { en: "Disability Insurance", fr: "Assurance Invalidité" },
+      desc: { en: "Income protection when illness or injury keeps you from working.", fr: "Protection de vos revenus en cas de maladie ou d'accident vous empêchant de travailler." }
+    },
+    {
+      id: "ltc",
+      icon: "fa-solid fa-hand-holding-heart",
+      title: { en: "Long Term Care Insurance", fr: "Assurance Dépendance" },
+      desc: { en: "Plan ahead for care services and protect your savings.", fr: "Planifiez à l'avance le financement de soins de longue durée et protégez votre épargne." }
+    },
+    {
+      id: "travel",
+      icon: "fa-solid fa-plane-departure",
+      title: { en: "Travel Insurance", fr: "Assurance Voyage" },
+      desc: { en: "Travel with confidence knowing you're protected from unexpected events.", fr: "Voyagez en toute confiance en sachant que vous êtes protégé contre les imprévus." }
+    },
+    {
+      id: "final-expense",
+      icon: "fa-solid fa-urn-stone",
+      title: { en: "Final Expense Insurance", fr: "Assurance Frais Obsèques" },
+      desc: { en: "Ease the financial burden on your loved ones with affordable coverage.", fr: "Allégez le fardeau financier de vos proches grâce à une couverture abordable." }
+    },
+    {
+      id: "umbrella",
+      icon: "fa-solid fa-umbrella",
+      title: { en: "Umbrella Insurance", fr: "Assurance Protection Globale" },
+      desc: { en: "Extra liability protection beyond your standard policies.", fr: "Une protection de responsabilité civile supplémentaire au-delà de vos polices standards." }
+    },
+    {
+      id: "annuities",
+      icon: "fa-solid fa-piggy-bank",
+      title: { en: "Annuities", fr: "Rentes & Retraite" },
+      desc: { en: "Plan for a secure retirement and build your financial future.", fr: "Planifiez une retraite sereine et bâtissez votre avenir financier." }
+    }
+  ];
 
   container.innerHTML = `
     <!-- Insurance Hero -->
@@ -151,6 +230,30 @@ export function renderInsurance(container) {
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- All Insurance Solutions Grid Section -->
+    <section class="all-solutions-section section-padding bg-light">
+      <div class="container text-center">
+        <span class="badge badge-gold">${t(text.solutionsBadge)}</span>
+        <h2>${t(text.solutionsTitle)}</h2>
+        <p class="section-desc">${t(text.solutionsDesc)}</p>
+        
+        <div class="grid grid-4 solutions-grid">
+          ${insuranceSolutions.map(sol => `
+            <div class="solution-card animate-fade-in">
+              <div class="solution-icon-wrapper">
+                <i class="${sol.icon} gold-text"></i>
+              </div>
+              <h3>${t(sol.title)}</h3>
+              <p>${t(sol.desc)}</p>
+              <button class="btn btn-outline-navy btn-xs btn-solution-inquire" data-service="${t(sol.title)}">
+                ${isEn ? 'Inquire' : 'Se renseigner'}
+              </button>
+            </div>
+          `).join('')}
+        </div>
       </div>
     </section>
 
@@ -260,6 +363,14 @@ export function renderInsurance(container) {
   
   // Setup Simulator logic
   setupSimulator();
+
+  // Hook the inquire buttons for all solutions
+  document.querySelectorAll('.btn-solution-inquire').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const service = btn.getAttribute('data-service');
+      window.location.hash = `#/contact?inquiry=${encodeURIComponent(service)}`;
+    });
+  });
   
   // Scroll to top
   window.scrollTo(0, 0);

@@ -4,6 +4,13 @@ import { currentLang, t } from '../utils/i18n.js';
 export function renderContact(container) {
   const isEn = currentLang === 'en';
 
+  const hashVal = window.location.hash || '#/';
+  const urlParams = new URLSearchParams(hashVal.split('?')[1] || '');
+  const inquiry = urlParams.get('inquiry');
+
+  const initialSubject = inquiry ? (isEn ? `Inquiry: ${inquiry}` : `Demande d'information : ${inquiry}`) : '';
+  const initialService = inquiry ? 'insurance' : '';
+
   const text = {
     badgeHero: { en: "Customer Support", fr: "Support Client" },
     titleHero: { en: "Contact SN Global Group", fr: "Contactez SN Global Group" },
@@ -134,16 +141,16 @@ export function renderContact(container) {
               <div class="form-group">
                 <label for="contact-service">${t(text.labelService)}</label>
                 <select id="contact-service" class="form-control" required>
-                  <option value="" disabled selected>${t(text.chooseService)}</option>
-                  <option value="travel">${t(text.optTravel)}</option>
-                  <option value="insurance">${t(text.optInsurance)}</option>
-                  <option value="corporate">${t(text.optCorp)}</option>
+                  <option value="" disabled ${!initialService ? 'selected' : ''}>${t(text.chooseService)}</option>
+                  <option value="travel" ${initialService === 'travel' ? 'selected' : ''}>${t(text.optTravel)}</option>
+                  <option value="insurance" ${initialService === 'insurance' ? 'selected' : ''}>${t(text.optInsurance)}</option>
+                  <option value="corporate" ${initialService === 'corporate' ? 'selected' : ''}>${t(text.optCorp)}</option>
                 </select>
               </div>
               
               <div class="form-group">
                 <label for="contact-subject">${t(text.labelSubject)}</label>
-                <input type="text" id="contact-subject" placeholder="${t(text.placeholderSubject)}" class="form-control" required>
+                <input type="text" id="contact-subject" placeholder="${t(text.placeholderSubject)}" class="form-control" value="${escapeHTML(initialSubject)}" required>
               </div>
               
               <div class="form-group">
