@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "main": "server.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,9 +11,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.19.2"
-  },
-  "devDependencies": {
+    "express": "^4.19.2",
     "vite": "^5.2.0"
   }
 }
