@@ -2648,6 +2648,32 @@ img {
   
   /* Timeline labels stack */
   .step-desc { display: none; }
+
+  /* Responsive Tab Selectors */
+  .tabs-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin: 30px 0;
+  }
+  .tab-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+  }
+
+  /* Header Logo & Actions on Mobile */
+  #header-logo-container svg {
+    max-width: 170px !important;
+    height: auto !important;
+  }
+  .header-actions {
+    gap: 8px;
+  }
+  #lang-switcher-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
 }
 
 /* Floating WhatsApp Button */

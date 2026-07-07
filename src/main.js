@@ -379,6 +379,11 @@ function router() {
   if (metaDesc) {
     metaDesc.setAttribute('content', t(currentSeo.description));
   }
+  
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) {
+    canonical.setAttribute('href', `https://snglobalgroup.online/#${path}`);
+  }
 
   const renderFn = routes[path] || renderGateway;
   
