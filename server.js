@@ -240,6 +240,75 @@ app.get('/api/tickets/:id', (req, res) => {
   res.json(ticket);
 });
 
+// SMTP Diagnostic Debug Endpoint
+app.get('/api/debug-smtp', async (req, res) => {
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO } = process.env;
+  
+  const debugLogs = [];
+  debugLogs.push(`Host: ${SMTP_HOST}`);
+  debugLogs.push(`Port: ${SMTP_PORT}`);
+  debugLogs.push(`User: ${SMTP_USER}`);
+  debugLogs.push(`Pass Length: ${SMTP_PASS ? SMTP_PASS.length : 0}`);
+  debugLogs.push(`To: ${EMAIL_TO}`);
+
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !EMAIL_TO) {
+    return res.json({ error: "Missing env variables on server", logs: debugLogs });
+  }
+
+  const portVal = parseInt(String(SMTP_PORT).trim() || '587');
+  
+  // Try sending
+  let logResult = await attemptSend(portVal);
+  if (!logResult.success) {
+    const fallbackPort = portVal === 465 ? 587 : 465;
+    debugLogs.push(`Primary port ${portVal} failed. Retrying fallback ${fallbackPort}...`);
+    logResult = await attemptSend(fallbackPort);
+  }
+
+  return res.json({
+    success: logResult.success,
+    error: logResult.error,
+    logs: [...debugLogs, ...logResult.attempts]
+  });
+
+  async function attemptSend(port) {
+    const attempts = [];
+    const isSecure = port === 465;
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST.trim(),
+      port: port,
+      secure: isSecure,
+      auth: {
+        user: SMTP_USER.trim(),
+        pass: SMTP_PASS.trim()
+      },
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 8000
+    });
+
+    try {
+      attempts.push(`Verifying transporter for port ${port}...`);
+      await transporter.verify();
+      attempts.push(`Transporter verified on port ${port}!`);
+
+      attempts.push(`Sending test email via port ${port}...`);
+      const info = await transporter.sendMail({
+        from: `"Render Debug SMTP" <${SMTP_USER.trim()}>`,
+        to: EMAIL_TO.trim(),
+        subject: `Render SMTP Debug Test Email (Port ${port})`,
+        text: `If you receive this email, your Hostinger SMTP works on Render via port ${port}!`
+      });
+      attempts.push(`Email sent successfully! MessageId: ${info.messageId}`);
+      return { success: true, attempts };
+    } catch (err) {
+      attempts.push(`Failed on port ${port}: ${err.message}`);
+      return { success: false, error: err.message, attempts };
+    }
+  }
+});
+
 // Serve static files from the dist directory
 app.use(express.static(join(__dirname, 'dist')));
 
