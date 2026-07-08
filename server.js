@@ -76,20 +76,28 @@ async function sendEmailNotification(ticket) {
     return;
   }
 
+  const portVal = parseInt(String(SMTP_PORT).trim() || '587');
+  const isSecure = portVal === 465;
+
   try {
     const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: parseInt(SMTP_PORT || '587'),
-      secure: parseInt(SMTP_PORT || '587') === 465,
+      host: SMTP_HOST.trim(),
+      port: portVal,
+      secure: isSecure,
       auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS
+        user: SMTP_USER.trim(),
+        pass: SMTP_PASS.trim()
+      },
+      tls: {
+        // Essential fallback for Hostinger/cPanel certificates issues
+        rejectUnauthorized: false
       }
     });
 
-    const mailOptions = {
-      from: `"SN Global Group Portal" <${SMTP_USER}>`,
-      to: EMAIL_TO,
+    // 1. Admin Email Options (to you)
+    const adminMailOptions = {
+      from: `"SN Global Group Portal" <${SMTP_USER.trim()}>`,
+      to: EMAIL_TO.trim(),
       subject: `[${ticket.service.toUpperCase()} - NEW TICKET] ${ticket.subject} (Ref: ${ticket.id})`,
       text: `Hello,\n\nA new ticket/request has been registered on the SN Global Group portal.\n\n` +
             `--- TICKET DETAILS ---\n` +
@@ -105,10 +113,36 @@ async function sendEmailNotification(ticket) {
             `Best regards,\nSN Global Group IT System`
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`Email notification sent successfully for ticket ${ticket.id}:`, info.messageId);
+    // 2. Client Email Options (Bilingual Auto-Confirmation)
+    const clientMailOptions = {
+      from: `"SN Global Group" <${SMTP_USER.trim()}>`,
+      to: ticket.email.trim(),
+      subject: `[SN Global Group] Request Registered / Demande Enregistrée - ${ticket.id}`,
+      text: `Dear Client / Cher Client(e),\n\n` +
+            `Your request has been successfully registered by our teams.\n` +
+            `Votre demande a été enregistrée avec succès par nos équipes.\n\n` +
+            `--- REQUEST DETAILS / DÉTAILS DE LA DEMANDE ---\n` +
+            `Reference / Référence : ${ticket.id}\n` +
+            `Service / Département : ${ticket.service === 'travel' ? 'SN Global Travel' : ticket.service === 'insurance' ? 'SN Global Insurance' : ticket.service === 'careers' ? 'Careers & Recruitment' : 'Corporate Support'}\n` +
+            `Subject / Sujet : ${ticket.subject}\n\n` +
+            `An advisor from our Baltimore office will contact you within 24 hours.\n` +
+            `Un conseiller de notre bureau de Baltimore prendra contact avec vous sous 24 heures.\n\n` +
+            `Thank you for your trust.\n` +
+            `Merci de votre confiance.\n\n` +
+            `Best regards / Cordialement,\n` +
+            `SN Global Group LLC\n` +
+            `100 N Charles St, Baltimore, MD 21201, USA\n` +
+            `www.snglobalgroup.online`
+    };
+
+    const adminInfo = await transporter.sendMail(adminMailOptions);
+    console.log(`Admin email notification sent successfully for ticket ${ticket.id}:`, adminInfo.messageId);
+
+    const clientInfo = await transporter.sendMail(clientMailOptions);
+    console.log(`Client email confirmation sent successfully to ${ticket.email} for ticket ${ticket.id}:`, clientInfo.messageId);
+
   } catch (err) {
-    console.error(`Nodemailer failed to send notification email for ticket ${ticket.id}:`, err);
+    console.error(`Nodemailer failed to send emails for ticket ${ticket.id}:`, err);
   }
 }
 
