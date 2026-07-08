@@ -102,6 +102,7 @@ async function sendEmailNotification(ticket) {
       tls: {
         rejectUnauthorized: false
       },
+      family: 4, // Force IPv4 resolution to bypass Render's lack of IPv6 outbound routing
       connectionTimeout: 8000 // 8 seconds timeout to fail-fast if Render blocks the port
     });
 
@@ -285,6 +286,7 @@ app.get('/api/debug-smtp', async (req, res) => {
       tls: {
         rejectUnauthorized: false
       },
+      family: 4, // Force IPv4 resolution to bypass Render's lack of IPv6 outbound routing
       connectionTimeout: 8000
     });
 
