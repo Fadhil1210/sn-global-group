@@ -6,9 +6,21 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import dns from 'dns';
 
 // Load environment variables from .env file
 dotenv.config();
+
+// DNS Resolver helper to force IPv4
+async function resolveIPv4(host) {
+  try {
+    const result = await dns.promises.lookup(host, { family: 4 });
+    return result.address;
+  } catch (err) {
+    console.error(`DNS lookup failed for ${host}:`, err.message);
+    return host;
+  }
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -89,10 +101,13 @@ async function sendEmailNotification(ticket) {
     await attemptSend(fallbackPort);
   }
 
+  const resolvedIp = await resolveIPv4(SMTP_HOST.trim());
+  console.log(`[SMTP] Resolved ${SMTP_HOST} to IPv4: ${resolvedIp}`);
+
   async function attemptSend(port) {
     const isSecure = port === 465;
     const transporter = nodemailer.createTransport({
-      host: SMTP_HOST.trim(),
+      host: resolvedIp,
       port: port,
       secure: isSecure,
       auth: {
@@ -100,9 +115,9 @@ async function sendEmailNotification(ticket) {
         pass: SMTP_PASS.trim()
       },
       tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        servername: SMTP_HOST.trim()
       },
-      family: 4, // Force IPv4 resolution to bypass Render's lack of IPv6 outbound routing
       connectionTimeout: 8000 // 8 seconds timeout to fail-fast if Render blocks the port
     });
 
@@ -283,8 +298,13 @@ app.get('/api/debug-smtp', async (req, res) => {
   async function attemptSend(port) {
     const attempts = [];
     const isSecure = port === 465;
+    
+    attempts.push(`Resolving ${SMTP_HOST.trim()} to IPv4...`);
+    const resolvedIp = await resolveIPv4(SMTP_HOST.trim());
+    attempts.push(`Resolved to IPv4: ${resolvedIp}`);
+
     const transporter = nodemailer.createTransport({
-      host: SMTP_HOST.trim(),
+      host: resolvedIp,
       port: port,
       secure: isSecure,
       auth: {
@@ -292,9 +312,9 @@ app.get('/api/debug-smtp', async (req, res) => {
         pass: SMTP_PASS.trim()
       },
       tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        servername: SMTP_HOST.trim()
       },
-      family: 4, // Force IPv4 resolution to bypass Render's lack of IPv6 outbound routing
       connectionTimeout: 8000
     });
 
