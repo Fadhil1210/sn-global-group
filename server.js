@@ -258,18 +258,26 @@ app.get('/api/debug-smtp', async (req, res) => {
 
   const portVal = parseInt(String(SMTP_PORT).trim() || '587');
   
-  // Try sending
-  let logResult = await attemptSend(portVal);
-  if (!logResult.success) {
+  // Try primary
+  const primaryResult = await attemptSend(portVal);
+  debugLogs.push(...primaryResult.attempts);
+
+  let success = primaryResult.success;
+  let finalError = primaryResult.error;
+
+  if (!success) {
     const fallbackPort = portVal === 465 ? 587 : 465;
     debugLogs.push(`Primary port ${portVal} failed. Retrying fallback ${fallbackPort}...`);
-    logResult = await attemptSend(fallbackPort);
+    const fallbackResult = await attemptSend(fallbackPort);
+    debugLogs.push(...fallbackResult.attempts);
+    success = fallbackResult.success;
+    finalError = fallbackResult.error;
   }
 
   return res.json({
-    success: logResult.success,
-    error: logResult.error,
-    logs: [...debugLogs, ...logResult.attempts]
+    success: success,
+    error: finalError,
+    logs: debugLogs
   });
 
   async function attemptSend(port) {
