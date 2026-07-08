@@ -2649,6 +2649,32 @@ img {
   /* Timeline labels stack */
   .step-desc { display: none; }
 
+  /* Subsidiary Banners (Sectors) on Mobile */
+  .sector-banner {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+  .sector-banner-visual {
+    height: 220px !important;
+    order: -1 !important;
+  }
+  .sector-banner-text {
+    padding: 30px 20px !important;
+  }
+
+  /* Corporate Badge Card on Mobile */
+  .corporate-badge-card {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    margin: 0 auto 20px auto !important;
+    max-width: 100% !important;
+  }
+  .group-intro-visual {
+    padding-left: 0 !important;
+    margin-top: 20px;
+  }
+
   /* Responsive Tab Selectors */
   .tabs-container {
     flex-direction: column;
