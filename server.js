@@ -76,73 +76,85 @@ async function sendEmailNotification(ticket) {
     return;
   }
 
-  const portVal = parseInt(String(SMTP_PORT).trim() || '587');
-  const isSecure = portVal === 465;
+  const primaryPort = parseInt(String(SMTP_PORT).trim() || '587');
+  
+  // 1. Try with the primary port configured in Render
+  console.log(`Attempting to send emails via primary port ${primaryPort}...`);
+  let success = await attemptSend(primaryPort);
+  
+  // 2. If it fails, try the fallback port automatically (firewall bypass)
+  if (!success) {
+    const fallbackPort = primaryPort === 465 ? 587 : 465;
+    console.log(`Primary port ${primaryPort} failed or timed out. Trying fallback port ${fallbackPort}...`);
+    await attemptSend(fallbackPort);
+  }
 
-  try {
+  async function attemptSend(port) {
+    const isSecure = port === 465;
     const transporter = nodemailer.createTransport({
       host: SMTP_HOST.trim(),
-      port: portVal,
+      port: port,
       secure: isSecure,
       auth: {
         user: SMTP_USER.trim(),
         pass: SMTP_PASS.trim()
       },
       tls: {
-        // Essential fallback for Hostinger/cPanel certificates issues
         rejectUnauthorized: false
-      }
+      },
+      connectionTimeout: 8000 // 8 seconds timeout to fail-fast if Render blocks the port
     });
 
-    // 1. Admin Email Options (to you)
-    const adminMailOptions = {
-      from: `"SN Global Group Portal" <${SMTP_USER.trim()}>`,
-      to: EMAIL_TO.trim(),
-      subject: `[${ticket.service.toUpperCase()} - NEW TICKET] ${ticket.subject} (Ref: ${ticket.id})`,
-      text: `Hello,\n\nA new ticket/request has been registered on the SN Global Group portal.\n\n` +
-            `--- TICKET DETAILS ---\n` +
-            `Ticket ID: ${ticket.id}\n` +
-            `Date: ${ticket.date}\n` +
-            `Client: ${ticket.name} (${ticket.email})\n` +
-            `Department: ${ticket.service}\n` +
-            `Subject: ${ticket.subject}\n` +
-            `Message: ${ticket.message}\n` +
-            `Status: ${ticket.status}\n\n` +
-            `Details (JSON):\n${JSON.stringify(ticket.details, null, 2)}\n\n` +
-            `This ticket is securely saved in the server database (tickets.json).\n` +
-            `Best regards,\nSN Global Group IT System`
-    };
+    try {
+      // Admin Alert Email
+      const adminMailOptions = {
+        from: `"SN Global Group Portal" <${SMTP_USER.trim()}>`,
+        to: EMAIL_TO.trim(),
+        subject: `[${ticket.service.toUpperCase()} - NEW TICKET] ${ticket.subject} (Ref: ${ticket.id})`,
+        text: `Hello,\n\nA new ticket/request has been registered on the SN Global Group portal.\n\n` +
+              `--- TICKET DETAILS ---\n` +
+              `Ticket ID: ${ticket.id}\n` +
+              `Date: ${ticket.date}\n` +
+              `Client: ${ticket.name} (${ticket.email})\n` +
+              `Department: ${ticket.service}\n` +
+              `Subject: ${ticket.subject}\n` +
+              `Message: ${ticket.message}\n` +
+              `Status: ${ticket.status}\n\n` +
+              `Details (JSON):\n${JSON.stringify(ticket.details, null, 2)}\n\n` +
+              `This ticket is securely saved in the server database (tickets.json).\n` +
+              `Best regards,\nSN Global Group IT System`
+      };
 
-    // 2. Client Email Options (Bilingual Auto-Confirmation)
-    const clientMailOptions = {
-      from: `"SN Global Group" <${SMTP_USER.trim()}>`,
-      to: ticket.email.trim(),
-      subject: `[SN Global Group] Request Registered / Demande Enregistrée - ${ticket.id}`,
-      text: `Dear Client / Cher Client(e),\n\n` +
-            `Your request has been successfully registered by our teams.\n` +
-            `Votre demande a été enregistrée avec succès par nos équipes.\n\n` +
-            `--- REQUEST DETAILS / DÉTAILS DE LA DEMANDE ---\n` +
-            `Reference / Référence : ${ticket.id}\n` +
-            `Service / Département : ${ticket.service === 'travel' ? 'SN Global Travel' : ticket.service === 'insurance' ? 'SN Global Insurance' : ticket.service === 'careers' ? 'Careers & Recruitment' : 'Corporate Support'}\n` +
-            `Subject / Sujet : ${ticket.subject}\n\n` +
-            `An advisor from our Baltimore office will contact you within 24 hours.\n` +
-            `Un conseiller de notre bureau de Baltimore prendra contact avec vous sous 24 heures.\n\n` +
-            `Thank you for your trust.\n` +
-            `Merci de votre confiance.\n\n` +
-            `Best regards / Cordialement,\n` +
-            `SN Global Group LLC\n` +
-            `100 N Charles St, Baltimore, MD 21201, USA\n` +
-            `www.snglobalgroup.online`
-    };
+      // Client Confirmation Email
+      const clientMailOptions = {
+        from: `"SN Global Group" <${SMTP_USER.trim()}>`,
+        to: ticket.email.trim(),
+        subject: `[SN Global Group] Request Registered / Demande Enregistrée - ${ticket.id}`,
+        text: `Dear Client / Cher Client(e),\n\n` +
+              `Your request has been successfully registered by our teams.\n` +
+              `Votre demande a été enregistrée avec succès par nos équipes.\n\n` +
+              `--- REQUEST DETAILS / DÉTAILS DE LA DEMANDE ---\n` +
+              `Reference / Référence : ${ticket.id}\n` +
+              `Service / Département : ${ticket.service === 'travel' ? 'SN Global Travel' : ticket.service === 'insurance' ? 'SN Global Insurance' : ticket.service === 'careers' ? 'Careers & Recruitment' : 'Corporate Support'}\n` +
+              `Subject / Sujet : ${ticket.subject}\n\n` +
+              `An advisor from our Baltimore office will contact you within 24 hours.\n` +
+              `Un conseiller de notre bureau de Baltimore prendra contact avec vous sous 24 heures.\n\n` +
+              `Thank you for your trust.\n` +
+              `Merci de votre confiance.\n\n` +
+              `Best regards / Cordialement,\n` +
+              `SN Global Group LLC\n` +
+              `100 N Charles St, Baltimore, MD 21201, USA\n` +
+              `www.snglobalgroup.online`
+      };
 
-    const adminInfo = await transporter.sendMail(adminMailOptions);
-    console.log(`Admin email notification sent successfully for ticket ${ticket.id}:`, adminInfo.messageId);
-
-    const clientInfo = await transporter.sendMail(clientMailOptions);
-    console.log(`Client email confirmation sent successfully to ${ticket.email} for ticket ${ticket.id}:`, clientInfo.messageId);
-
-  } catch (err) {
-    console.error(`Nodemailer failed to send emails for ticket ${ticket.id}:`, err);
+      await transporter.sendMail(adminMailOptions);
+      await transporter.sendMail(clientMailOptions);
+      console.log(`Emails sent successfully via port ${port} for ticket ${ticket.id}`);
+      return true;
+    } catch (err) {
+      console.error(`Failed to send emails via port ${port}:`, err.message);
+      return false;
+    }
   }
 }
 
