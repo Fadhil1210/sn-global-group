@@ -2957,3 +2957,104 @@ img {
   }
 }
 
+/* Social Subscription Popup */
+.social-popup-card {
+  position: fixed;
+  bottom: -350px; /* Hidden initially */
+  left: 30px;
+  width: 325px;
+  background: rgba(10, 17, 24, 0.96);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 24px;
+  z-index: 10000;
+  color: var(--color-white);
+  transition: bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  will-change: bottom;
+}
+
+.social-popup-card.active {
+  bottom: 30px;
+}
+
+.social-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  line-height: 1;
+}
+
+.social-popup-close:hover {
+  color: var(--color-gold);
+}
+
+.social-popup-header {
+  margin-bottom: 12px;
+}
+
+.social-popup-card h3 {
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-top: 4px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.social-popup-card p {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.45;
+  margin-bottom: 20px;
+}
+
+.social-popup-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-popup-buttons a {
+  flex: 1;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  padding: 8px 12px;
+}
+
+@media (max-width: 480px) {
+  .social-popup-card {
+    left: 15px;
+    right: 15px;
+    width: auto;
+    bottom: -350px;
+    padding: 20px;
+  }
+  .social-popup-card.active {
+    bottom: 85px; /* Stay clear of the mobile WhatsApp float */
+  }
+}
+
+/* GPU-Accelerated Micro-Animations & Smooth Transitions */
+.btn, .social-icon, .nav-item, .card, .plan-card, .solution-card, .destination-card, .post-card {
+  will-change: transform, box-shadow, border-color;
+}
+
+.solution-card:hover, .plan-card:hover, .post-card:hover, .destination-card:hover {
+  transform: translateY(-6px) translateZ(0) scale(1.01);
+  box-shadow: 0 12px 24px rgba(10, 17, 24, 0.08);
+}
+

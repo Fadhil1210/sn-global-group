@@ -310,6 +310,18 @@ function updateStaticTranslations() {
       : "© 2026 SN Global Group LLC. Tous droits réservés.";
   }
 
+  // Social Popup Translations
+  const popupTitle = document.getElementById('social-popup-title');
+  const popupDesc = document.getElementById('social-popup-desc');
+  if (popupTitle) {
+    popupTitle.innerText = isEn ? 'Join our Community' : 'Rejoignez notre Communauté';
+  }
+  if (popupDesc) {
+    popupDesc.innerText = isEn
+      ? 'Follow us on social media for the latest travel inspirations and corporate insurance updates.'
+      : 'Suivez-nous sur les réseaux sociaux pour découvrir nos inspirations de voyages et nos actualités d\'assurances.';
+  }
+
   // Support Modal
   const modalHeader = document.querySelector('#ticket-modal h2');
   if (modalHeader) {
@@ -719,6 +731,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Init Cookie Consent Banner
   initCookieBanner();
+
+  // Init Social Subscription Popup
+  initSocialPopup();
   
   // Set initial translations and run router
   updateStaticTranslations();
@@ -783,4 +798,25 @@ function initCookieBanner() {
 
   // Re-render text on language change
   window.addEventListener('languagechange', renderBannerContent);
+}
+
+// Social Subscription Popup System
+function initSocialPopup() {
+  const popup = document.getElementById('social-popup');
+  const closeBtn = document.getElementById('close-social-popup');
+  if (!popup || !closeBtn) return;
+
+  // Check if already dismissed in sessionStorage
+  if (sessionStorage.getItem('sn_social_popup_dismissed') === 'true') return;
+
+  // Wait 10 seconds before showing
+  setTimeout(() => {
+    if (sessionStorage.getItem('sn_social_popup_dismissed') === 'true') return;
+    popup.classList.add('active');
+  }, 10000);
+
+  closeBtn.addEventListener('click', () => {
+    popup.classList.remove('active');
+    sessionStorage.setItem('sn_social_popup_dismissed', 'true');
+  });
 }
