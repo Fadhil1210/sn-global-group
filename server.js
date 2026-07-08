@@ -79,12 +79,97 @@ function writeTickets(tickets) {
   }
 }
 
+// --- Resend HTTP API Helper (Bypasses Render Outbound SMTP block) ---
+async function sendViaResend(ticket, apiKey, emailTo) {
+  try {
+    const adminText = `Hello,\n\nA new ticket/request has been registered on the SN Global Group portal.\n\n` +
+          `--- TICKET DETAILS ---\n` +
+          `Ticket ID: ${ticket.id}\n` +
+          `Date: ${ticket.date}\n` +
+          `Client: ${ticket.name} (${ticket.email})\n` +
+          `Department: ${ticket.service}\n` +
+          `Subject: ${ticket.subject}\n` +
+          `Message: ${ticket.message}\n` +
+          `Status: ${ticket.status}\n\n` +
+          `Details (JSON):\n${JSON.stringify(ticket.details, null, 2)}\n\n` +
+          `This ticket is securely saved in the server database (tickets.json).\n` +
+          `Best regards,\nSN Global Group IT System`;
+
+    const clientText = `Dear Client / Cher Client(e),\n\n` +
+          `Your request has been successfully registered by our teams.\n` +
+          `Votre demande a été enregistrée avec succès par nos équipes.\n\n` +
+          `--- REQUEST DETAILS / DÉTAILS DE LA DEMANDE ---\n` +
+          `Reference / Référence : ${ticket.id}\n` +
+          `Service / Département : ${ticket.service === 'travel' ? 'SN Global Travel' : ticket.service === 'insurance' ? 'SN Global Insurance' : ticket.service === 'careers' ? 'Careers & Recruitment' : 'Corporate Support'}\n` +
+          `Subject / Sujet : ${ticket.subject}\n\n` +
+          `An advisor from our Baltimore office will contact you within 24 hours.\n` +
+          `Un conseiller de notre bureau de Baltimore prendra contact avec vous sous 24 heures.\n\n` +
+          `Thank you for your trust.\n` +
+          `Merci de votre confiance.\n\n` +
+          `Best regards / Cordialement,\n` +
+          `SN Global Group LLC\n` +
+          `100 N Charles St, Baltimore, MD 21201, USA\n` +
+          `www.snglobalgroup.online`;
+
+    // 1. Send Admin Alert Email
+    const adminRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: '"SN Global Group Portal" <contact@snglobalgroup.online>',
+        to: emailTo,
+        subject: `[${ticket.service.toUpperCase()} - NEW TICKET] ${ticket.subject} (Ref: ${ticket.id})`,
+        text: adminText
+      })
+    });
+
+    // 2. Send Client Confirmation Email
+    const clientRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: '"SN Global Group" <contact@snglobalgroup.online>',
+        to: ticket.email.trim(),
+        subject: `[SN Global Group] Request Registered / Demande Enregistrée - ${ticket.id}`,
+        text: clientText
+      })
+    });
+
+    if (adminRes.ok && clientRes.ok) {
+      console.log(`[Resend API] Emails sent successfully for ticket ${ticket.id}`);
+      return true;
+    } else {
+      const adminErr = await adminRes.text();
+      const clientErr = await clientRes.text();
+      console.error(`[Resend API] Failed to send. Admin status: ${adminRes.status} (${adminErr}), Client status: ${clientRes.status} (${clientErr})`);
+      return false;
+    }
+  } catch (err) {
+    console.error(`[Resend API] Error sending emails:`, err.message);
+    return false;
+  }
+}
+
 // --- Nodemailer E-mail Helper ---
 async function sendEmailNotification(ticket) {
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO } = process.env;
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO, RESEND_API_KEY } = process.env;
+
+  // 1. Try sending via Resend API if API key is present (HTTP Port 443 - Bypasses Render Free firewall)
+  if (RESEND_API_KEY && EMAIL_TO) {
+    console.log(`[Email] Found RESEND_API_KEY. Attempting to send via Resend HTTP API...`);
+    const success = await sendViaResend(ticket, RESEND_API_KEY.trim(), EMAIL_TO.trim());
+    if (success) return;
+    console.log(`[Email] Resend API failed. Falling back to SMTP...`);
+  }
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !EMAIL_TO) {
-    console.log(`[SMTP Notification skipped] Ticket ${ticket.id} stored in database. SMTP parameters missing in .env.`);
+    console.log(`[SMTP Notification skipped] Ticket ${ticket.id} stored in database. SMTP parameters missing in env.`);
     return;
   }
 
@@ -258,7 +343,7 @@ app.get('/api/tickets/:id', (req, res) => {
 
 // SMTP Diagnostic Debug Endpoint
 app.get('/api/debug-smtp', async (req, res) => {
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO } = process.env;
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO, RESEND_API_KEY } = process.env;
   
   const debugLogs = [];
   debugLogs.push(`Host: ${SMTP_HOST}`);
@@ -266,6 +351,41 @@ app.get('/api/debug-smtp', async (req, res) => {
   debugLogs.push(`User: ${SMTP_USER}`);
   debugLogs.push(`Pass Length: ${SMTP_PASS ? SMTP_PASS.length : 0}`);
   debugLogs.push(`To: ${EMAIL_TO}`);
+  debugLogs.push(`Resend API Key Length: ${RESEND_API_KEY ? RESEND_API_KEY.length : 0}`);
+
+  // Test Resend API if key is present
+  if (RESEND_API_KEY && EMAIL_TO) {
+    debugLogs.push(`Found RESEND_API_KEY. Testing Resend HTTP API (Port 443)...`);
+    try {
+      const resendRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${RESEND_API_KEY.trim()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: '"Render Debug Resend" <contact@snglobalgroup.online>',
+          to: EMAIL_TO.trim(),
+          subject: 'Render Resend HTTP API Diagnostic Test',
+          text: 'If you receive this email, Resend API works on Render!'
+        })
+      });
+      
+      if (resendRes.ok) {
+        debugLogs.push(`[Resend Success] Resend HTTP API test email sent successfully!`);
+        return res.json({
+          success: true,
+          method: 'resend-api',
+          logs: debugLogs
+        });
+      } else {
+        const errText = await resendRes.text();
+        debugLogs.push(`[Resend Error] Resend HTTP API failed with status ${resendRes.status}: ${errText}`);
+      }
+    } catch (err) {
+      debugLogs.push(`[Resend Connection Error] Failed to connect to Resend API: ${err.message}`);
+    }
+  }
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !EMAIL_TO) {
     return res.json({ error: "Missing env variables on server", logs: debugLogs });
