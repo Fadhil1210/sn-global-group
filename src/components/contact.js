@@ -8,8 +8,14 @@ export function renderContact(container) {
   const urlParams = new URLSearchParams(hashVal.split('?')[1] || '');
   const inquiry = urlParams.get('inquiry');
 
-  const initialSubject = inquiry ? (isEn ? `Inquiry: ${inquiry}` : `Demande d'information : ${inquiry}`) : '';
-  const initialService = inquiry ? 'insurance' : '';
+  const initialSubject = inquiry 
+    ? (inquiry === 'careers' 
+        ? (isEn ? "Application: Careers & Recruitment" : "Candidature : Recrutement & Carrières") 
+        : (isEn ? `Inquiry: ${inquiry}` : `Demande d'information : ${inquiry}`))
+    : '';
+  const initialService = inquiry 
+    ? (inquiry === 'careers' ? 'careers' : 'insurance') 
+    : '';
 
   const text = {
     badgeHero: { en: "Customer Support", fr: "Support Client" },
@@ -40,6 +46,7 @@ export function renderContact(container) {
     optTravel: { en: "SN Global Travel (Bespoke Travel)", fr: "SN Global Travel (Voyage sur mesure)" },
     optInsurance: { en: "SN Global Insurance (USA Insurance)", fr: "SN Global Insurance (Assurance USA)" },
     optCorp: { en: "Corporate Holding (Baltimore HQ)", fr: "Holding Corporate (Baltimore HQ)" },
+    optCareers: { en: "Careers & Recruitment (Join the Group)", fr: "Recrutement & Carrières (Rejoindre le Groupe)" },
     labelSubject: { en: "Subject of your request", fr: "Sujet de votre demande" },
     placeholderSubject: { en: "e.g., Insurance info, custom safari quote...", fr: "Ex: Renseignements assurance visa, Devis safari..." },
     labelMsg: { en: "Message", fr: "Message" },
@@ -145,6 +152,7 @@ export function renderContact(container) {
                   <option value="travel" ${initialService === 'travel' ? 'selected' : ''}>${t(text.optTravel)}</option>
                   <option value="insurance" ${initialService === 'insurance' ? 'selected' : ''}>${t(text.optInsurance)}</option>
                   <option value="corporate" ${initialService === 'corporate' ? 'selected' : ''}>${t(text.optCorp)}</option>
+                  <option value="careers" ${initialService === 'careers' ? 'selected' : ''}>${t(text.optCareers)}</option>
                 </select>
               </div>
               

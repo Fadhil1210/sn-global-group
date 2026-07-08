@@ -346,6 +346,8 @@ function router() {
   }
   
   path = path.split('?')[0];
+  
+  const urlParams = new URLSearchParams(hash.split('?')[1] || '');
 
   // Dynamic SEO Metadata updates
   const seoData = {
@@ -498,6 +500,22 @@ function router() {
 
   // Fade cards/sections in as the user scrolls
   initScrollReveal(container);
+
+  // Handle auto-scroll parameters if present in the URL query string
+  const scrollTarget = urlParams.get('scroll');
+  if (scrollTarget) {
+    setTimeout(() => {
+      let targetEl = null;
+      if (scrollTarget === 'values') {
+        targetEl = document.querySelector('.values-section');
+      } else if (scrollTarget === 'simulator') {
+        targetEl = document.getElementById('simulator-anchor');
+      }
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 300);
+  }
 
   // Finalize page transition
   setTimeout(() => {
