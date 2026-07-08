@@ -219,63 +219,72 @@ export function renderContact(container) {
       return;
     }
 
-    const sortedTickets = [...tickets].reverse();
-    
-    listContainer.innerHTML = `
-      <div class="tickets-table-wrapper">
-        <table class="tickets-table">
-          <thead>
-            <tr>
-              <th>${t(text.thDate)}</th>
-              <th>${t(text.thRef)}</th>
-              <th>${t(text.thService)}</th>
-              <th>${t(text.thSubject)}</th>
-              <th>${t(text.thStatus)}</th>
-              <th>${t(text.thAction)}</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${sortedTickets.map(tkt => {
-              let statusClass = 'status-badge-info';
-              if (tkt.status === 'Nouveau') statusClass = 'status-badge-warning';
-              else if (tkt.status === 'Traité') statusClass = 'status-badge-success';
-              
-              let serviceLabel = 'Corporate';
-              if (tkt.service === 'travel') serviceLabel = 'Travel';
-              else if (tkt.service === 'insurance') serviceLabel = 'Insurance';
+    // Query server API for each ticket in parallel to fetch real status
+    const fetchPromises = tickets.map(tkt =>
+      fetch(`/api/tickets/${tkt.id}`)
+        .then(res => res.ok ? res.json() : tkt)
+        .catch(() => tkt)
+    );
 
-              return `
-                <tr>
-                  <td>${escapeHTML(tkt.date.split(' ')[0])}</td>
-                  <td><strong class="gold-text">${escapeHTML(tkt.id)}</strong></td>
-                  <td><span class="service-tag service-tag-${escapeHTML(tkt.service)}">${serviceLabel}</span></td>
-                  <td class="text-truncate" style="max-width: 250px;">${escapeHTML(tkt.subject)}</td>
-                  <td><span class="status-badge ${statusClass}">${escapeHTML(tkt.status)}</span></td>
-                  <td>
-                    <button class="btn btn-outline-navy btn-xs btn-track-ticket-local" data-id="${escapeHTML(tkt.id)}">
-                      <i class="fa-solid fa-eye"></i> ${t(text.btnTrack)}
-                    </button>
-                  </td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
+    Promise.all(fetchPromises).then(updatedTickets => {
+      const sortedTickets = [...updatedTickets].reverse();
+      
+      listContainer.innerHTML = `
+        <div class="tickets-table-wrapper">
+          <table class="tickets-table">
+            <thead>
+              <tr>
+                <th>${t(text.thDate)}</th>
+                <th>${t(text.thRef)}</th>
+                <th>${t(text.thService)}</th>
+                <th>${t(text.thSubject)}</th>
+                <th>${t(text.thStatus)}</th>
+                <th>${t(text.thAction)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedTickets.map(tkt => {
+                let statusClass = 'status-badge-info';
+                if (tkt.status === 'Nouveau') statusClass = 'status-badge-warning';
+                else if (tkt.status === 'Traité') statusClass = 'status-badge-success';
+                
+                let serviceLabel = 'Corporate';
+                if (tkt.service === 'travel') serviceLabel = 'Travel';
+                else if (tkt.service === 'insurance') serviceLabel = 'Insurance';
 
-    document.querySelectorAll('.btn-track-ticket-local').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        const ticketModal = document.getElementById('ticket-modal');
-        const ticketInput = document.getElementById('modal-ticket-id-input');
-        const searchBtn = document.getElementById('modal-btn-search-ticket');
-        
-        if (ticketModal && ticketInput && searchBtn) {
-          ticketInput.value = id;
-          ticketModal.classList.add('active');
-          searchBtn.click();
-        }
+                return `
+                  <tr>
+                    <td>${escapeHTML(tkt.date.split(' ')[0])}</td>
+                    <td><strong class="gold-text">${escapeHTML(tkt.id)}</strong></td>
+                    <td><span class="service-tag service-tag-${escapeHTML(tkt.service)}">${serviceLabel}</span></td>
+                    <td class="text-truncate" style="max-width: 250px;">${escapeHTML(tkt.subject)}</td>
+                    <td><span class="status-badge ${statusClass}">${escapeHTML(tkt.status)}</span></td>
+                    <td>
+                      <button class="btn btn-outline-navy btn-xs btn-track-ticket-local" data-id="${escapeHTML(tkt.id)}">
+                        <i class="fa-solid fa-eye"></i> ${t(text.btnTrack)}
+                      </button>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      document.querySelectorAll('.btn-track-ticket-local').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const ticketModal = document.getElementById('ticket-modal');
+          const ticketInput = document.getElementById('modal-ticket-id-input');
+          const searchBtn = document.getElementById('modal-btn-search-ticket');
+          
+          if (ticketModal && ticketInput && searchBtn) {
+            ticketInput.value = id;
+            ticketModal.classList.add('active');
+            searchBtn.click();
+          }
+        });
       });
     });
   }
@@ -291,44 +300,66 @@ export function initContactForm() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${currentLang === 'en' ? 'Sending...' : 'Envoi en cours...'}`;
+
     const name = document.getElementById('contact-name').value.trim();
     const email = document.getElementById('contact-email').value.trim();
     const service = document.getElementById('contact-service').value;
     const subject = document.getElementById('contact-subject').value.trim();
     const message = document.getElementById('contact-message').value.trim();
-    
-    const rand = Math.floor(1000 + Math.random() * 9000);
-    const ticketId = `SN-SUPP-${rand}`;
-    
-    const newTicket = {
-      id: ticketId,
-      name: name,
-      email: email,
-      service: service,
-      subject: subject,
-      message: message,
-      status: 'Nouveau',
-      date: new Date().toLocaleString(currentLang === 'en' ? 'en-US' : 'fr-FR'),
-      details: {}
-    };
-    
-    const tickets = JSON.parse(localStorage.getItem('sn_global_tickets')) || [];
-    tickets.push(newTicket);
-    localStorage.setItem('sn_global_tickets', JSON.stringify(tickets));
-    
-    form.classList.add('hidden');
-    document.getElementById('contact-ticket-id').innerText = ticketId;
-    successPanel.classList.remove('hidden');
-    
-    // Re-render my tickets list if the contact view is currently active
-    const listContainer = document.getElementById('my-tickets-list-container');
-    if (listContainer) {
-      renderContact(document.getElementById('app'));
-      // Keep success panel open
-      document.getElementById('sn-contact-form').classList.add('hidden');
-      document.getElementById('contact-success-panel').classList.remove('hidden');
-      document.getElementById('contact-ticket-id').innerText = ticketId;
-    }
+
+    fetch('/api/tickets', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        service,
+        subject,
+        message,
+        date: new Date().toLocaleString(currentLang === 'en' ? 'en-US' : 'fr-FR'),
+        details: {}
+      })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('API submission error');
+      return res.json();
+    })
+    .then(ticket => {
+      const tickets = JSON.parse(localStorage.getItem('sn_global_tickets')) || [];
+      tickets.push(ticket);
+      localStorage.setItem('sn_global_tickets', JSON.stringify(tickets));
+      
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+
+      form.classList.add('hidden');
+      document.getElementById('contact-ticket-id').innerText = ticket.id;
+      successPanel.classList.remove('hidden');
+      
+      // Re-render my tickets list if the contact view is currently active
+      const listContainer = document.getElementById('my-tickets-list-container');
+      if (listContainer) {
+        renderContact(document.getElementById('app'));
+        // Keep success panel open
+        document.getElementById('sn-contact-form').classList.add('hidden');
+        document.getElementById('contact-success-panel').classList.remove('hidden');
+        document.getElementById('contact-ticket-id').innerText = ticket.id;
+      }
+    })
+    .catch(err => {
+      console.error('Failed to submit contact form:', err);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      alert(currentLang === 'en' 
+        ? 'Failed to send your request. Please check server connection.' 
+        : 'Erreur lors de l\'envoi de votre demande. Veuillez vérifier la connexion au serveur.');
+    });
   });
   
   resetBtn.addEventListener('click', () => {

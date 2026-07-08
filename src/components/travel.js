@@ -488,6 +488,11 @@ export function renderTravel(container) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${isEn ? 'Submitting...' : 'Transmission...'}`;
+
       const destination = document.getElementById('plan-destination').value.trim();
       const durationVal = document.getElementById('plan-duration').value;
       const travellers = document.getElementById('plan-travellers').value;
@@ -495,36 +500,53 @@ export function renderTravel(container) {
       const name = document.getElementById('plan-name').value.trim();
       const emailVal = document.getElementById('plan-email').value.trim();
       const notes = document.getElementById('plan-notes').value.trim();
-      
-      const ticketRand = Math.floor(1000 + Math.random() * 9000);
-      const ticketId = `SN-TRVL-${ticketRand}`;
-      
-      const newTicket = {
-        id: ticketId,
-        name: name,
-        email: emailVal,
-        service: 'travel',
-        subject: `Bespoke Trip Quote - ${destination}`,
-        message: `Bespoke travel project for ${travellers} participant(s) to ${destination}. Duration: ${durationVal} days. Budget style: ${budget}. Notes: ${notes}`,
-        status: 'Nouveau',
-        date: new Date().toLocaleString(isEn ? 'en-US' : 'fr-FR'),
-        details: {
-          destination,
-          duration: durationVal,
-          travellers,
-          budget,
-          notes
-        }
-      };
-      
-      const tickets = JSON.parse(localStorage.getItem('sn_global_tickets')) || [];
-      tickets.push(newTicket);
-      localStorage.setItem('sn_global_tickets', JSON.stringify(tickets));
-      
-      form.classList.add('hidden');
-      document.getElementById('planner-ticket-id').innerText = ticketId;
-      successMsg.classList.remove('hidden');
-      document.querySelector('.form-steps-indicator').style.display = 'none';
+
+      fetch('/api/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          email: emailVal,
+          service: 'travel',
+          subject: `Bespoke Trip Quote - ${destination}`,
+          message: `Bespoke travel project for ${travellers} participant(s) to ${destination}. Duration: ${durationVal} days. Budget style: ${budget}. Notes: ${notes}`,
+          date: new Date().toLocaleString(isEn ? 'en-US' : 'fr-FR'),
+          details: {
+            destination,
+            duration: durationVal,
+            travellers,
+            budget,
+            notes
+          }
+        })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('API submission error');
+        return res.json();
+      })
+      .then(ticket => {
+        const tickets = JSON.parse(localStorage.getItem('sn_global_tickets')) || [];
+        tickets.push(ticket);
+        localStorage.setItem('sn_global_tickets', JSON.stringify(tickets));
+        
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+
+        form.classList.add('hidden');
+        document.getElementById('planner-ticket-id').innerText = ticket.id;
+        successMsg.classList.remove('hidden');
+        document.querySelector('.form-steps-indicator').style.display = 'none';
+      })
+      .catch(err => {
+        console.error('Failed to submit travel request:', err);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        alert(isEn 
+          ? 'Failed to send your request. Please check server connection.' 
+          : 'Erreur lors de l\'envoi de votre demande. Veuillez vérifier la connexion au serveur.');
+      });
     });
 
     resetBtn.addEventListener('click', () => {

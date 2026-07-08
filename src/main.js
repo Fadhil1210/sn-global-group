@@ -8,6 +8,7 @@ import { renderTravel } from './components/travel.js';
 import { renderInsurance } from './components/insurance.js';
 import { renderBlog } from './components/blog.js';
 import { renderContact, initContactForm } from './components/contact.js';
+import { renderLegal, renderPrivacy, renderCookies } from './components/legal.js';
 
 // Simple "About" view directly in main.js to keep project organized
 function renderAbout(container) {
@@ -102,7 +103,7 @@ function renderAbout(container) {
     <section class="baltimore-section section-padding">
       <div class="container grid grid-2 align-center">
         <div class="baltimore-visual">
-          <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=800&q=80" alt="Inner Harbor Baltimore" class="img-responsive rounded shadow">
+          <div id="baltimore-map" class="rounded shadow" style="height: 380px; width: 100%; min-width: 300px; border: 1px solid var(--color-gold);"></div>
         </div>
         <div class="baltimore-text">
           <span class="badge">${t(text.badgeHq)}</span>
@@ -114,6 +115,40 @@ function renderAbout(container) {
       </div>
     </section>
   `;
+
+  // Initialize interactive Leaflet map for Baltimore HQ
+  setTimeout(() => {
+    const mapElement = document.getElementById('baltimore-map');
+    if (mapElement && typeof L !== 'undefined') {
+      const lat = 39.290875;
+      const lng = -76.615174; // 100 N Charles St, Baltimore, MD 21201
+      
+      const map = L.map('baltimore-map', {
+        center: [lat, lng],
+        zoom: 15,
+        zoomControl: true,
+        scrollWheelZoom: false
+      });
+      
+      // Beautiful light voyager tile layer from CartoDB to match site aesthetics
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      }).addTo(map);
+      
+      // Add marker at Baltimore Headquarters
+      const marker = L.marker([lat, lng]).addTo(map);
+      marker.bindPopup(`
+        <div style="font-family: 'Poppins', sans-serif; font-size: 0.8rem; color: var(--color-navy);">
+          <strong style="color: var(--color-gold-dark);">SN Global Group LLC</strong><br>
+          100 N Charles St, Baltimore, MD 21201<br>
+          <span style="font-weight: 600;">Baltimore HQ</span>
+        </div>
+      `).openPopup();
+    }
+  }, 150);
+
   window.scrollTo(0, 0);
 }
 
@@ -156,7 +191,10 @@ const routes = {
   '/insurance': renderInsurance,
   '/about': renderAbout,
   '/blog': renderBlog,
-  '/contact': renderContact
+  '/contact': renderContact,
+  '/legal': renderLegal,
+  '/privacy': renderPrivacy,
+  '/cookies': renderCookies
 };
 
 // Static Translation Sync function
@@ -313,12 +351,12 @@ function router() {
   const seoData = {
     '/': {
       title: {
-        en: "SN Global Group | Bespoke Travel & USA Insurance",
-        fr: "SN Global Group | Voyage sur Mesure & Assurance USA"
+        en: "SN Global Group | Bespoke Travel & USA & Canada Insurance",
+        fr: "SN Global Group | Voyage sur Mesure & Assurance USA et Canada"
       },
       description: {
-        en: "Double exclusive expertise: luxury custom travel and complete health/life insurance solutions in the USA by the trusted holding based in Baltimore.",
-        fr: "Double expertise exclusive : voyages d'exception personnalisés et solutions d'assurances complètes aux USA par la holding de confiance basée à Baltimore."
+        en: "Double exclusive expertise: luxury custom travel and complete health/life insurance solutions in the USA & Canada by the trusted holding based in Baltimore.",
+        fr: "Double expertise exclusive : voyages d'exception personnalisés et solutions d'assurances complètes aux USA & Canada par la holding de confiance basée à Baltimore."
       }
     },
     '/travel': {
@@ -333,12 +371,12 @@ function router() {
     },
     '/insurance': {
       title: {
-        en: "USA Insurance: Health, Pension & Relocation | SN Global Insurance",
-        fr: "Assurance USA : Santé, Prévoyance & Expatriation | SN Global Insurance"
+        en: "USA & Canada Insurance: Health, Life & Relocation | SN Global Insurance",
+        fr: "Assurance USA & Canada : Santé, Prévoyance & Expatriation | SN Global Insurance"
       },
       description: {
-        en: "Bespoke USA insurance solutions. Simulate your premium in real time for travel health insurance or expat life insurance.",
-        fr: "Solutions d'assurance USA sur mesure. Simulez votre prime en temps réel pour l'assurance santé voyage ou prévoyance vie expatrié."
+        en: "Bespoke USA & Canada insurance solutions. Simulate your premium in real time for travel health insurance or expat life insurance.",
+        fr: "Solutions d'assurance USA & Canada sur mesure. Simulez votre prime en temps réel pour l'assurance santé voyage ou prévoyance vie expatrié."
       }
     },
     '/about': {
@@ -369,6 +407,36 @@ function router() {
       description: {
         en: "Contact our offices in Baltimore, Maryland. Submit your quote requests and track your support ticket status online.",
         fr: "Contactez nos bureaux de Baltimore, Maryland. Soumettez vos demandes de devis et suivez l'avancement de votre ticket d'assistance en ligne."
+      }
+    },
+    '/legal': {
+      title: {
+        en: "Legal Notice | SN Global Group",
+        fr: "Mentions Légales | SN Global Group"
+      },
+      description: {
+        en: "Legal information, owner identity, host and terms of use for SN Global Group.",
+        fr: "Informations légales, identité du propriétaire, hébergeur et conditions d'utilisation de SN Global Group."
+      }
+    },
+    '/privacy': {
+      title: {
+        en: "Privacy Policy | SN Global Group",
+        fr: "Politique de Confidentialité | SN Global Group"
+      },
+      description: {
+        en: "Learn about how we protect and manage your personal data in compliance with GDPR and CCPA.",
+        fr: "Découvrez comment nous protégeons et gérons vos données personnelles conformément au RGPD et à la CCPA."
+      }
+    },
+    '/cookies': {
+      title: {
+        en: "Cookie Management | SN Global Group",
+        fr: "Gestion des Cookies | SN Global Group"
+      },
+      description: {
+        en: "Cookie policy and settings configuration for SN Global Group.",
+        fr: "Politique d'utilisation et configuration des cookies pour SN Global Group."
       }
     }
   };
@@ -477,73 +545,109 @@ function initTicketingSystem() {
       resultContainer.innerHTML = `<p class="text-error"><i class="fa-solid fa-circle-exclamation"></i> ${isEn ? 'Please enter a valid ticket number (e.g., SN-XXXX).' : 'Veuillez entrer un numéro de ticket valide (Ex: SN-XXXX).'}</p>`;
       return;
     }
-    
-    const tickets = JSON.parse(localStorage.getItem('sn_global_tickets')) || [];
-    const ticket = tickets.find(tkt => tkt.id === id);
-    
-    if (!ticket) {
-      resultContainer.innerHTML = `
-        <div class="ticket-error-state">
-          <i class="fa-solid fa-magnifying-glass-minus text-error"></i>
-          <h4>${isEn ? 'Ticket Not Found' : 'Ticket Introuvable'}</h4>
-          <p>${isEn ? `No file matching reference <strong>${escapeHTML(id)}</strong> was found. Verify input or contact us.` : `Aucun dossier correspondant à la référence <strong>${escapeHTML(id)}</strong> n'a été trouvé. Vérifiez la saisie ou contactez-nous.`}</p>
-        </div>
-      `;
-      return;
-    }
-    
-    let statusClass = 'status-badge-info';
-    let step = 1;
-    if (ticket.status === 'Nouveau') {
-      statusClass = 'status-badge-warning';
-      step = 1;
-    } else if (ticket.status === 'En cours') {
-      statusClass = 'status-badge-info';
-      step = 2;
-    } else if (ticket.status === 'Traité') {
-      statusClass = 'status-badge-success';
-      step = 3;
-    }
-    
-    let statusLabel = ticket.status;
-    if (isEn) {
-      if (ticket.status === 'Nouveau') statusLabel = 'New';
-      else if (ticket.status === 'En cours') statusLabel = 'In progress';
-      else if (ticket.status === 'Traité') statusLabel = 'Processed';
-    }
-    
-    resultContainer.className = "ticket-result-found";
-    resultContainer.innerHTML = `
-      <div class="ticket-card-header">
-        <span class="ticket-id">${escapeHTML(ticket.id)}</span>
-        <span class="status-badge ${statusClass}">${escapeHTML(statusLabel)}</span>
-      </div>
-      <div class="ticket-card-body">
-        <p><strong>${isEn ? 'Recipient:' : 'Destinataire :'}</strong> ${ticket.service === 'travel' ? 'SN Global Travel' : ticket.service === 'insurance' ? 'SN Global Insurance' : 'Holding Corporate'}</p>
-        <p><strong>${isEn ? 'Subject:' : 'Sujet :'}</strong> ${escapeHTML(ticket.subject)}</p>
-        <p><strong>${isEn ? 'Creation Date:' : 'Date de création :'}</strong> ${escapeHTML(ticket.date)}</p>
-        <p><strong>${isEn ? 'Message Sent:' : 'Message transmis :'}</strong> <span class="ticket-msg-preview">"${escapeHTML(ticket.message)}"</span></p>
-      </div>
-      
-      <!-- Progress timeline -->
-      <div class="ticket-timeline">
-        <div class="timeline-step ${step >= 1 ? 'completed' : ''}">
-          <div class="step-icon"><i class="fa-solid fa-file-signature"></i></div>
-          <div class="step-label">${isEn ? 'Received' : 'Reçu'}</div>
-          <div class="step-desc">${isEn ? 'Registered in Baltimore' : 'Enregistré à Baltimore'}</div>
-        </div>
-        <div class="timeline-step ${step >= 2 ? 'completed' : ''}">
-          <div class="step-icon"><i class="fa-solid fa-user-tie"></i></div>
-          <div class="step-label">${isEn ? 'Analysis' : 'Analyse'}</div>
-          <div class="step-desc">${isEn ? 'Study by an advisor' : 'Étude par un conseiller'}</div>
-        </div>
-        <div class="timeline-step ${step >= 3 ? 'completed' : ''}">
-          <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="step-label">${isEn ? 'Resolved' : 'Résolu'}</div>
-          <div class="step-desc">${isEn ? 'Proposal sent' : 'Proposition transmise'}</div>
-        </div>
-      </div>
-    `;
+
+    resultContainer.innerHTML = `<p class="text-muted"><i class="fa-solid fa-spinner fa-spin"></i> ${isEn ? 'Searching on server...' : 'Recherche sur le serveur...'}</p>`;
+
+    fetch(`/api/tickets/${id}`)
+      .then(res => {
+        if (res.status === 404) return null;
+        if (!res.ok) throw new Error('Server error');
+        return res.json();
+      })
+      .then(ticket => {
+        if (!ticket) {
+          resultContainer.innerHTML = `
+            <div class="ticket-error-state">
+              <i class="fa-solid fa-magnifying-glass-minus text-error" style="font-size: 2.2rem; display: block; margin-bottom: 12px;"></i>
+              <h4>${isEn ? 'Ticket Not Found' : 'Ticket Introuvable'}</h4>
+              <p>${isEn ? `No file matching reference <strong>${escapeHTML(id)}</strong> was found. Verify input or contact us.` : `Aucun dossier correspondant à la référence <strong>${escapeHTML(id)}</strong> n'a été trouvé. Vérifiez la saisie ou contactez-nous.`}</p>
+            </div>
+          `;
+          return;
+        }
+        
+        let statusClass = 'status-badge-info';
+        let step = 1;
+        if (ticket.status === 'Nouveau') {
+          statusClass = 'status-badge-warning';
+          step = 1;
+        } else if (ticket.status === 'En cours') {
+          statusClass = 'status-badge-info';
+          step = 2;
+        } else if (ticket.status === 'Traité') {
+          statusClass = 'status-badge-success';
+          step = 3;
+        }
+        
+        let statusLabel = ticket.status;
+        if (isEn) {
+          if (ticket.status === 'Nouveau') statusLabel = 'New';
+          else if (ticket.status === 'En cours') statusLabel = 'In progress';
+          else if (ticket.status === 'Traité') statusLabel = 'Processed';
+        }
+        
+        let responseHtml = '';
+        if (ticket.status === 'Traité') {
+          let respText = '';
+          if (ticket.service === 'travel') {
+            respText = isEn 
+              ? "Hello, your customized travel project has been analyzed by our Baltimore team. We have sent a detailed proposal to your email address. Thank you for your trust!"
+              : "Bonjour, votre projet de voyage sur mesure a été analysé par notre équipe de Baltimore. Nous vous avons transmis une proposition détaillée à votre adresse e-mail. Merci pour votre confiance !";
+          } else if (ticket.service === 'insurance') {
+            respText = isEn
+              ? "Hello, your insurance simulation has been verified. A broker has sent your personalized PDF quote and subscription documents to your email. Contact +1 (202) 386-2273 for any adjustments."
+              : "Bonjour, votre simulation d'assurance a été vérifiée. Un courtier vous a transmis votre devis PDF personnalisé et vos documents d'adhésion par e-mail. Contactez-nous au +1 (202) 386-2273.";
+          } else {
+            respText = isEn
+              ? "Hello, your contact request has been processed. An advisor has sent a response to your email address."
+              : "Bonjour, votre demande de contact a été traitée. Un conseiller vous a envoyé une réponse détaillée à votre adresse e-mail.";
+          }
+          responseHtml = `
+            <div class="ticket-response-box" style="margin-top: 16px; padding: 16px; background-color: #FAF6E9; border-left: 4px solid var(--color-gold); border-radius: var(--border-radius-sm); font-size: 0.8rem; text-align: left;">
+              <p style="margin-bottom: 6px; font-weight: 600; color: var(--color-navy);"><i class="fa-solid fa-reply"></i> Baltimore Support Team:</p>
+              <p style="color: var(--color-text-muted); font-style: italic; line-height: 1.4;">"${respText}"</p>
+            </div>
+          `;
+        }
+
+        resultContainer.className = "ticket-result-found";
+        resultContainer.innerHTML = `
+          <div class="ticket-card-header">
+            <span class="ticket-id">${escapeHTML(ticket.id)}</span>
+            <span class="status-badge ${statusClass}">${escapeHTML(statusLabel)}</span>
+          </div>
+          <div class="ticket-card-body">
+            <p><strong>${isEn ? 'Recipient:' : 'Destinataire :'}</strong> ${ticket.service === 'travel' ? 'SN Global Travel' : ticket.service === 'insurance' ? 'SN Global Insurance' : 'Holding Corporate'}</p>
+            <p><strong>${isEn ? 'Subject:' : 'Sujet :'}</strong> ${escapeHTML(ticket.subject)}</p>
+            <p><strong>${isEn ? 'Creation Date:' : 'Date de création :'}</strong> ${escapeHTML(ticket.date)}</p>
+            <p><strong>${isEn ? 'Message Sent:' : 'Message transmis :'}</strong> <span class="ticket-msg-preview">"${escapeHTML(ticket.message)}"</span></p>
+            ${responseHtml}
+          </div>
+          
+          <!-- Progress timeline -->
+          <div class="ticket-timeline">
+            <div class="timeline-step ${step >= 1 ? 'completed' : ''}">
+              <div class="step-icon"><i class="fa-solid fa-file-signature"></i></div>
+              <div class="step-label">${isEn ? 'Received' : 'Reçu'}</div>
+              <div class="step-desc">${isEn ? 'Registered in Baltimore' : 'Enregistré à Baltimore'}</div>
+            </div>
+            <div class="timeline-step ${step >= 2 ? 'completed' : ''}">
+              <div class="step-icon"><i class="fa-solid fa-user-tie"></i></div>
+              <div class="step-label">${isEn ? 'Analysis' : 'Analyse'}</div>
+              <div class="step-desc">${isEn ? 'Study by an advisor' : 'Étude par un conseiller'}</div>
+            </div>
+            <div class="timeline-step ${step >= 3 ? 'completed' : ''}">
+              <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
+              <div class="step-label">${isEn ? 'Resolved' : 'Résolu'}</div>
+              <div class="step-desc">${isEn ? 'Proposal sent' : 'Proposition transmise'}</div>
+            </div>
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error('Failed to query ticket:', err);
+        resultContainer.innerHTML = `<p class="text-error"><i class="fa-solid fa-circle-exclamation"></i> ${isEn ? 'Failed to connect to the Baltimore database.' : 'Erreur de connexion avec la base de données de Baltimore.'}</p>`;
+      });
   }
 }
 
@@ -594,8 +698,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Init ticket system
   initTicketingSystem();
+
+  // Init Cookie Consent Banner
+  initCookieBanner();
   
   // Set initial translations and run router
   updateStaticTranslations();
   router();
 });
+
+// Cookie Consent Banner System
+function initCookieBanner() {
+  if (localStorage.getItem('sn_cookie_consent')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'cookie-consent-banner';
+  banner.className = 'cookie-banner animate-slide-up';
+
+  function renderBannerContent() {
+    const isEn = currentLang === 'en';
+    banner.innerHTML = `
+      <div class="cookie-banner-container">
+        <div class="cookie-text">
+          <i class="fa-solid fa-cookie-bite gold-text"></i>
+          <p>
+            ${isEn 
+              ? `We use cookies to enhance your experience (language selection, ticket tracking). Read our <a href="#/privacy" class="gold-link">Privacy Policy</a>.` 
+              : `Nous utilisons des cookies pour optimiser votre expérience (choix de langue, suivi de tickets). Consultez notre <a href="#/privacy" class="gold-link">Politique de Confidentialité</a>.`}
+          </p>
+        </div>
+        <div class="cookie-actions">
+          <button id="cookie-decline-btn" class="btn btn-outline-white btn-xs">${isEn ? 'Decline' : 'Refuser'}</button>
+          <button id="cookie-accept-btn" class="btn btn-gold btn-xs">${isEn ? 'Accept' : 'Accepter'}</button>
+        </div>
+      </div>
+    `;
+    
+    // Bind buttons
+    const acceptBtn = banner.querySelector('#cookie-accept-btn');
+    const declineBtn = banner.querySelector('#cookie-decline-btn');
+    
+    if (acceptBtn) {
+      acceptBtn.addEventListener('click', () => {
+        localStorage.setItem('sn_cookie_consent', 'accepted');
+        dismissBanner();
+      });
+    }
+    if (declineBtn) {
+      declineBtn.addEventListener('click', () => {
+        localStorage.setItem('sn_cookie_consent', 'declined');
+        dismissBanner();
+      });
+    }
+  }
+
+  function dismissBanner() {
+    banner.classList.remove('animate-slide-up');
+    banner.classList.add('animate-slide-down');
+    setTimeout(() => {
+      banner.remove();
+    }, 400);
+  }
+
+  renderBannerContent();
+  document.body.appendChild(banner);
+
+  // Re-render text on language change
+  window.addEventListener('languagechange', renderBannerContent);
+}

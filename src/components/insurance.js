@@ -345,11 +345,14 @@ export function renderInsurance(container) {
               </form>
               
               <div id="quote-lead-success" class="quote-lead-success-msg hidden">
-                <i class="fa-solid fa-circle-check text-success"></i>
+                <i class="fa-solid fa-circle-check text-success" style="font-size: 2.2rem; margin-bottom: 12px; display: block;"></i>
                 <h4>${t(text.successTitle)}</h4>
                 <p>${t(text.successRef)} <strong id="quote-success-ticket-id">SN-INS-1234</strong></p>
-                <p>${t(text.successDesc)}</p>
-                <button type="button" id="btn-reset-quote-form" class="btn btn-outline-white btn-xs">${t(text.successReset)}</button>
+                <p style="font-size: 0.8rem; margin-bottom: 16px;">${t(text.successDesc)}</p>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
+                  <button type="button" id="btn-download-pdf" class="btn btn-gold btn-xs" style="width:100%;"><i class="fa-solid fa-file-pdf"></i> ${isEn ? 'Download PDF Quote' : 'Télécharger Devis PDF'}</button>
+                  <button type="button" id="btn-reset-quote-form" class="btn btn-outline-white btn-xs" style="width:100%;">${t(text.successReset)}</button>
+                </div>
               </div>
             </div>
           </div>
@@ -442,12 +445,17 @@ function setupSimulator() {
 
   updateSimulatorInputs('travel');
 
-  const leadForm = document.getElementById('insurance-quote-lead-form');
-  const leadSuccess = document.getElementById('quote-lead-success');
-  const resetLeadBtn = document.getElementById('btn-reset-quote-form');
+  let activeTicket = null;
 
   leadForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    
+    // Simulate Premium Network loader
+    const submitBtn = leadForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${currentLang === 'en' ? 'Calculating...' : 'Calcul en cours...'}`;
+
     const name = document.getElementById('quote-lead-name').value.trim();
     const email = document.getElementById('quote-lead-email').value.trim();
     const insType = simType.value;
@@ -465,44 +473,82 @@ function setupSimulator() {
 
     const chosenOptions = [];
     document.querySelectorAll('#sim-options-checkboxes input:checked').forEach(cb => {
-      chosenOptions.push(cb.value);
+      // Map it to its translated label if available
+      if (insType === 'travel') {
+        const opt = travelInsurance.options.find(x => x.id === cb.value);
+        chosenOptions.push(opt ? t(opt.name) : cb.value);
+      } else {
+        const opt = lifeInsurance.options.find(x => x.id === cb.value);
+        chosenOptions.push(opt ? t(opt.name) : cb.value);
+      }
     });
 
-    const ticketRand = Math.floor(1000 + Math.random() * 9000);
-    const ticketId = `SN-INS-${ticketRand}`;
+    fetch('/api/tickets', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        service: 'insurance',
+        subject: `Insurance Quote - ${insType === 'travel' ? 'Travel' : 'Life'} (${planName})`,
+        message: `Insurance application for ${name}, Age: ${simAge.value} years old. Type: ${insType === 'travel' ? 'Travel USA' : 'Expatriate Life'}. Chosen Plan: ${planName}. Calculated Estimate: ${finalPrice}. Options: ${chosenOptions.join(', ') || 'None'}`,
+        date: new Date().toLocaleString(currentLang === 'en' ? 'en-US' : 'fr-FR'),
+        details: {
+          insType,
+          age: simAge.value,
+          duration: insType === 'travel' ? simDuration.value : 'N/A',
+          planName,
+          finalPrice,
+          chosenOptions
+        }
+      })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('API submission error');
+      return res.json();
+    })
+    .then(ticket => {
+      activeTicket = ticket;
+      const tickets = JSON.parse(localStorage.getItem('sn_global_tickets')) || [];
+      tickets.push(activeTicket);
+      localStorage.setItem('sn_global_tickets', JSON.stringify(tickets));
 
-    const newTicket = {
-      id: ticketId,
-      name: name,
-      email: email,
-      service: 'insurance',
-      subject: `Insurance Quote - ${insType === 'travel' ? 'Travel' : 'Life'} (${planName})`,
-      message: `Insurance application for ${name}, Age: ${simAge.value} years old. Type: ${insType === 'travel' ? 'Travel USA' : 'Expatriate Life'}. Chosen Plan: ${planName}. Calculated Estimate: ${finalPrice}. Options: ${chosenOptions.join(', ') || 'None'}`,
-      status: 'Nouveau',
-      date: new Date().toLocaleString(currentLang === 'en' ? 'en-US' : 'fr-FR'),
-      details: {
-        insType,
-        age: simAge.value,
-        duration: insType === 'travel' ? simDuration.value : 'N/A',
-        planName,
-        finalPrice,
-        chosenOptions
-      }
-    };
+      // Restore submit button state
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
 
-    const tickets = JSON.parse(localStorage.getItem('sn_global_tickets')) || [];
-    tickets.push(newTicket);
-    localStorage.setItem('sn_global_tickets', JSON.stringify(tickets));
-
-    leadForm.classList.add('hidden');
-    document.getElementById('quote-success-ticket-id').innerText = ticketId;
-    leadSuccess.classList.remove('hidden');
+      // Swap form with success panel
+      leadForm.classList.add('hidden');
+      document.getElementById('quote-success-ticket-id').innerText = ticket.id;
+      leadSuccess.classList.remove('hidden');
+    })
+    .catch(err => {
+      console.error('Failed to submit insurance quote request:', err);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      alert(currentLang === 'en' 
+        ? 'Failed to send your request. Please check server connection.' 
+        : 'Erreur lors de l\'envoi de votre demande. Veuillez vérifier la connexion au serveur.');
+    });
   });
+
+  // Handle PDF Download action
+  const downloadPdfBtn = document.getElementById('btn-download-pdf');
+  if (downloadPdfBtn) {
+    downloadPdfBtn.addEventListener('click', () => {
+      if (activeTicket) {
+        generatePDF(activeTicket);
+      }
+    });
+  }
 
   resetLeadBtn.addEventListener('click', () => {
     leadForm.reset();
     leadForm.classList.remove('hidden');
     leadSuccess.classList.add('hidden');
+    activeTicket = null;
   });
 }
 
@@ -595,4 +641,167 @@ function calculatePremium() {
     summaryLimit.innerText = `${plan.coverageAmount.toLocaleString()} $ (${isEn ? 'Guaranteed capital' : 'Capital garanti'})`;
     summaryDeductible.innerText = isEn ? 'No death deductible' : 'Aucune franchise décès';
   }
+}
+
+/**
+ * Generates an elegant premium invoice-style PDF document for the insurance quote estimate.
+ * @param {Object} ticket - The ticket details structure.
+ */
+function generatePDF(ticket) {
+  if (typeof window.jspdf === 'undefined') {
+    console.error('jsPDF library is not loaded');
+    return;
+  }
+  
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  const isEn = currentLang === 'en';
+
+  // Design Colors: Deep Navy (#0D1B2A) and Gold (#D4AF37)
+  const navy = [13, 27, 42];
+  const gold = [212, 175, 55];
+  const darkGray = [51, 65, 85];
+  const lightGray = [248, 250, 252];
+
+  // Draw Header Banner
+  doc.setFillColor(...navy);
+  doc.rect(0, 0, 210, 45, 'F');
+
+  // Gold Line under header
+  doc.setFillColor(...gold);
+  doc.rect(0, 45, 210, 2, 'F');
+
+  // Header Title
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.text('SN GLOBAL GROUP', 15, 20);
+  
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text('100 N Charles St, Baltimore, MD 21201, USA', 15, 27);
+  doc.text('contact@snglobalgroup.online  |  +1 (202) 386-2273', 15, 33);
+
+  // Quote Subtitle
+  doc.setFontSize(15);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...navy);
+  doc.text(isEn ? 'INSURANCE PREMIUM ESTIMATE' : "ESTIMATION DE PRIME D'ASSURANCE", 15, 60);
+
+  // Divider
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.5);
+  doc.line(15, 65, 195, 65);
+
+  // Two columns: Left: Client details. Right: Quote Reference.
+  doc.setFontSize(10);
+  doc.setTextColor(...darkGray);
+  
+  // Left Column
+  doc.setFont('helvetica', 'bold');
+  doc.text(isEn ? 'INSURED PERSON:' : 'ASSURÉ :', 15, 75);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`${ticket.name}`, 15, 81);
+  doc.text(`${ticket.email}`, 15, 87);
+  doc.text((isEn ? 'Age: ' : 'Âge : ') + `${ticket.details.age} ` + (isEn ? 'years old' : 'ans'), 15, 93);
+
+  // Right Column
+  doc.setFont('helvetica', 'bold');
+  doc.text(isEn ? 'REFERENCE:' : 'RÉFÉRENCE :', 120, 75);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...gold);
+  doc.text(`${ticket.id}`, 120, 81);
+  
+  doc.setTextColor(...darkGray);
+  doc.setFont('helvetica', 'normal');
+  doc.text((isEn ? 'Date: ' : 'Date : ') + `${ticket.date.split(' ')[0]}`, 120, 87);
+  doc.text((isEn ? 'Status: ' : 'Statut : ') + (isEn ? 'Pending Review' : 'En attente'), 120, 93);
+
+  // Product Table Background Box
+  doc.setFillColor(...lightGray);
+  doc.rect(15, 105, 180, 52, 'F');
+  doc.setDrawColor(226, 232, 240);
+  doc.rect(15, 105, 180, 52, 'D');
+
+  // Product Details
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...navy);
+  doc.setFontSize(11);
+  doc.text(isEn ? 'Selected Coverage Details' : 'Détails de la Couverture Sélectionnée', 20, 112);
+  
+  doc.setFontSize(10);
+  doc.setTextColor(...darkGray);
+  doc.setFont('helvetica', 'bold');
+  doc.text(isEn ? 'Type of Plan:' : 'Type de contrat :', 20, 122);
+  doc.setFont('helvetica', 'normal');
+  const typeText = ticket.details.insType === 'travel' 
+    ? (isEn ? 'Temporary Travel USA Insurance' : 'Assurance Voyage Temporaire USA')
+    : (isEn ? 'Expatriate USA Life Insurance' : 'Assurance Vie Expatrié USA');
+  doc.text(typeText, 65, 122);
+
+  doc.setFont('helvetica', 'bold');
+  doc.text(isEn ? 'Selected Formula:' : 'Formule choisie :', 20, 128);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`${ticket.details.planName}`, 65, 128);
+
+  if (ticket.details.insType === 'travel') {
+    doc.setFont('helvetica', 'bold');
+    doc.text(isEn ? 'Duration of Stay:' : 'Durée du séjour :', 20, 134);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${ticket.details.duration} ` + (isEn ? 'days' : 'jours'), 65, 134);
+  }
+
+  doc.setFont('helvetica', 'bold');
+  doc.text(isEn ? 'Options Included:' : 'Garanties optionnelles :', 20, 140);
+  doc.setFont('helvetica', 'normal');
+  const optionsText = ticket.details.chosenOptions.length > 0 
+    ? ticket.details.chosenOptions.join(', ')
+    : (isEn ? 'None' : 'Aucune');
+  
+  const splitOptions = doc.splitTextToSize(optionsText, 120);
+  doc.text(splitOptions, 65, 140);
+
+  // Total Box
+  doc.setFillColor(...navy);
+  doc.rect(15, 168, 180, 20, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.text(isEn ? 'ESTIMATED PREMIUM:' : 'PRÉVISION DE LA PRIME :', 22, 180);
+  doc.setTextColor(...gold);
+  doc.setFontSize(14);
+  doc.text(`${ticket.details.finalPrice}`, 140, 180);
+
+  // Footer / Institutional note
+  doc.setTextColor(...darkGray);
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  const noteText = isEn
+    ? 'Note: This document is a premium simulation based on standard criteria. A licensed advisor from our Baltimore office will contact you to perform the official underwriting and provide the final binding policy.'
+    : 'Note : Ce document est une simulation de tarif basée sur des critères standards. Un conseiller agréé de notre bureau de Baltimore prendra contact avec vous pour finaliser la souscription officielle.';
+  
+  const splitNote = doc.splitTextToSize(noteText, 180);
+  doc.text(splitNote, 15, 202);
+
+  // Stamp / Decorative Logo
+  doc.setFillColor(...lightGray);
+  doc.rect(15, 230, 180, 28, 'F');
+  doc.setDrawColor(226, 232, 240);
+  doc.rect(15, 230, 180, 28, 'D');
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...navy);
+  doc.setFontSize(10);
+  doc.text('SN GLOBAL INSURANCE DEPT.', 20, 238);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.text('Subject to approval of the corporate risk management board. Baltimore, Maryland, USA.', 20, 245);
+  doc.text('SN Global Group LLC. All rights reserved. 2026.', 20, 250);
+
+  // Save the PDF
+  doc.save(`SN_Global_Quote_${ticket.id}.pdf`);
 }
