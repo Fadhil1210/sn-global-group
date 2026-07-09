@@ -1136,6 +1136,7 @@ img {
 .radio-label:hover {
   background-color: #F8FAFC;
   border-color: var(--color-gold);
+  color: var(--color-navy) !important;
 }
 
 .radio-label input {
@@ -3127,4 +3128,20 @@ img {
   transform: translateY(-6px) translateZ(0) scale(1.01);
   box-shadow: 0 12px 24px rgba(10, 17, 24, 0.08);
 }
+
+/* Accessibility & Legibility overrides for Dark Background sections */
+.bg-navy-light .form-group label,
+.simulator-section .form-group label,
+.planner-section .form-group label {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.bg-navy-light .text-muted,
+.simulator-section .text-muted,
+.planner-section .text-muted,
+.bg-navy-dark .text-muted,
+.sectors-section .text-muted {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
 
