@@ -634,8 +634,8 @@ function initTicketingSystem() {
               : "Bonjour, votre projet de voyage sur mesure a été analysé par notre équipe de Baltimore. Nous vous avons transmis une proposition détaillée à votre adresse e-mail. Merci pour votre confiance !";
           } else if (ticket.service === 'insurance') {
             respText = isEn
-              ? "Hello, your insurance simulation has been verified. A broker has sent your personalized PDF quote and subscription documents to your email. Contact +1 (202) 386-2273 for any adjustments."
-              : "Bonjour, votre simulation d'assurance a été vérifiée. Un courtier vous a transmis votre devis PDF personnalisé et vos documents d'adhésion par e-mail. Contactez-nous au +1 (202) 386-2273.";
+              ? "Hello, your insurance simulation has been verified. A broker has sent your personalized PDF quote and subscription documents to your email. Contact +1 (443) 250-2629 for any adjustments."
+              : "Bonjour, votre simulation d'assurance a été vérifiée. Un courtier vous a transmis votre devis PDF personnalisé et vos documents d'adhésion par e-mail. Contactez-nous au +1 (443) 250-2629.";
           } else {
             respText = isEn
               ? "Hello, your contact request has been processed. An advisor has sent a response to your email address."

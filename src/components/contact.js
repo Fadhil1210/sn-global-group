@@ -107,7 +107,7 @@ export function renderContact(container) {
               <i class="fa-solid fa-phone-volume gold-text"></i>
               <div>
                 <h4>${t(text.corpPhone)}</h4>
-                <p>+1 (202) 386-2273 <span class="text-muted">(Baltimore HQ)</span></p>
+                <p>+1 (443) 250-2629 <span class="text-muted">(Baltimore HQ)</span></p>
               </div>
             </div>
             
