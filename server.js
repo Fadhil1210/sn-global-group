@@ -316,13 +316,19 @@ app.post('/api/tickets', async (req, res) => {
     service,
     subject,
     message,
-    status: status || 'Nouveau',
-    date: date || new Date().toLocaleString(),
+    status: 'Nouveau', // Always force server-side initialization to prevent status hijacking
+    date: new Date().toLocaleString(), // Always force server-side timestamp to prevent chronological manipulation
     details: details || {}
   };
 
   const tickets = readTickets();
   tickets.push(newTicket);
+
+  // Cap database size at 500 entries to prevent server resource exhaustion and storage space DoS
+  if (tickets.length > 500) {
+    tickets.shift(); // Evict oldest ticket to maintain safety
+  }
+  
   writeTickets(tickets);
 
   // Send email notification asynchronously
@@ -374,8 +380,15 @@ app.get('/api/tickets/:id', (req, res) => {
   res.json(ticket);
 });
 
-// SMTP Diagnostic Debug Endpoint
+// SMTP Diagnostic Debug Endpoint (Protected with secure token in production)
 app.get('/api/debug-smtp', async (req, res) => {
+  const token = req.query.token;
+  const debugToken = process.env.DEBUG_TOKEN;
+  
+  if (!debugToken || token !== debugToken) {
+    return res.status(403).json({ error: 'Access denied: invalid debug token parameter.' });
+  }
+
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_TO, RESEND_API_KEY } = process.env;
   
   const debugLogs = [];
