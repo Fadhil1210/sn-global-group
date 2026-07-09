@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import dns from 'dns';
+import crypto from 'crypto';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -293,12 +294,20 @@ app.post('/api/tickets', async (req, res) => {
     return res.status(400).json({ error: 'Missing required ticket parameters' });
   }
 
-  const rand = Math.floor(1000 + Math.random() * 9000);
+  // Server-side email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Invalid email address format' });
+  }
+
+  // Generate a cryptographically secure 6-character hex suffix (16.7 million combinations per service)
+  // This blocks brute force/scanning IDOR security vulnerabilities.
+  const secureSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
   let prefix = 'SN-SUPP';
   if (service === 'travel') prefix = 'SN-TRVL';
   else if (service === 'insurance') prefix = 'SN-INS';
 
-  const ticketId = `${prefix}-${rand}`;
+  const ticketId = `${prefix}-${secureSuffix}`;
 
   const newTicket = {
     id: ticketId,
