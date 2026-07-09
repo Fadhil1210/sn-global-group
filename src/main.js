@@ -644,7 +644,7 @@ function initTicketingSystem() {
           responseHtml = `
             <div class="ticket-response-box" style="margin-top: 16px; padding: 16px; background-color: #FAF6E9; border-left: 4px solid var(--color-gold); border-radius: var(--border-radius-sm); font-size: 0.8rem; text-align: left;">
               <p style="margin-bottom: 6px; font-weight: 600; color: var(--color-navy);"><i class="fa-solid fa-reply"></i> Baltimore Support Team:</p>
-              <p style="color: var(--color-text-muted); font-style: italic; line-height: 1.4;">"${respText}"</p>
+              <p style="color: var(--color-text-dark); font-style: italic; line-height: 1.4;">"${respText}"</p>
             </div>
           `;
         }
