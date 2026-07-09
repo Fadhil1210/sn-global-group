@@ -22,6 +22,30 @@ async function resolveIPv4(host) {
   }
 }
 
+// Format ticket details cleanly without any developer JSON tags
+function formatDetails(details) {
+  if (!details || Object.keys(details).length === 0) return '';
+  
+  let text = `\n--- ADDITIONAL SPECIFICATIONS / SPÉCIFICATIONS ADDITIONNELLES ---\n`;
+  for (const [key, value] of Object.entries(details)) {
+    // Convert camelCase to Space separated Title (e.g. "selectedPlan" -> "Selected Plan")
+    const formattedKey = key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase());
+    
+    if (typeof value === 'object' && value !== null) {
+      text += `${formattedKey}:\n`;
+      for (const [subKey, subVal] of Object.entries(value)) {
+        const formattedSubKey = subKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        text += `  - ${formattedSubKey}: ${subVal}\n`;
+      }
+    } else {
+      text += `${formattedKey}: ${value}\n`;
+    }
+  }
+  return text;
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -90,8 +114,8 @@ async function sendViaResend(ticket, apiKey, emailTo) {
           `Department: ${ticket.service}\n` +
           `Subject: ${ticket.subject}\n` +
           `Message: ${ticket.message}\n` +
-          `Status: ${ticket.status}\n\n` +
-          `Details (JSON):\n${JSON.stringify(ticket.details, null, 2)}\n\n` +
+          `Status: ${ticket.status}\n` +
+          `${formatDetails(ticket.details)}\n` +
           `This ticket is securely saved in the server database (tickets.json).\n` +
           `Best regards,\nSN Global Group IT System`;
 
@@ -220,8 +244,8 @@ async function sendEmailNotification(ticket) {
               `Department: ${ticket.service}\n` +
               `Subject: ${ticket.subject}\n` +
               `Message: ${ticket.message}\n` +
-              `Status: ${ticket.status}\n\n` +
-              `Details (JSON):\n${JSON.stringify(ticket.details, null, 2)}\n\n` +
+              `Status: ${ticket.status}\n` +
+              `${formatDetails(ticket.details)}\n` +
               `This ticket is securely saved in the server database (tickets.json).\n` +
               `Best regards,\nSN Global Group IT System`
       };
