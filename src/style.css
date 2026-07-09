@@ -527,6 +527,14 @@ img {
   margin-bottom: 24px;
   display: flex;
   justify-content: center;
+  max-width: 100%;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.holding-hero-logo svg {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Group presentation style */
@@ -664,6 +672,12 @@ img {
 
 .sector-logo-wrapper {
   margin-bottom: 8px;
+  max-width: 100%;
+}
+
+.sector-logo-wrapper svg {
+  max-width: 100%;
+  height: auto;
 }
 
 .sector-banner-text p {
@@ -2621,11 +2635,21 @@ img {
   .group-initials { font-size: 1.6rem; }
   
   /* Heros scale down */
-  .travel-hero h1, .insurance-hero h1, .blog-hero h1, .contact-hero h1, .about-hero h1 {
+  .holding-hero h1, .travel-hero h1, .insurance-hero h1, .blog-hero h1, .contact-hero h1, .about-hero h1 {
     font-size: 2.2rem;
   }
   .subtitle { font-size: 1rem; }
   .hero-actions { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
+  
+  /* Holding quick stats stack vertically on mobile to prevent overflow */
+  .holding-quick-stats {
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .q-stat {
+    width: 100%;
+  }
   
   /* Filters wrapper stacks */
   .filter-wrapper { flex-direction: column; gap: 16px; }
@@ -2673,6 +2697,21 @@ img {
   .group-intro-visual {
     padding-left: 0 !important;
     margin-top: 20px;
+  }
+  .group-intro-visual img {
+    max-height: 280px;
+    object-fit: cover;
+    width: 100%;
+  }
+  
+  /* Extra mobile adjustments for very small screens (iPhone SE, etc.) */
+  @media (max-width: 480px) {
+    .holding-hero h1, .travel-hero h1, .insurance-hero h1, .blog-hero h1, .contact-hero h1, .about-hero h1 {
+      font-size: 1.8rem !important;
+    }
+    .subtitle {
+      font-size: 0.9rem !important;
+    }
   }
 
   /* Responsive Tab Selectors */

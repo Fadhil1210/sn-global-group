@@ -303,11 +303,17 @@ function updateStaticTranslations() {
       : "Holding internationale basée à Baltimore, MD, unissant l'art du voyage d'exception et la sécurité de solutions d'assurances exclusives.";
   }
 
+  const currentYear = new Date().getFullYear();
   const footerCopyright = document.querySelector('#main-footer .copyright');
   if (footerCopyright) {
     footerCopyright.innerText = isEn
-      ? "© 2026 SN Global Group LLC. All rights reserved."
-      : "© 2026 SN Global Group LLC. Tous droits réservés.";
+      ? `© ${currentYear} SN Global Group LLC. All rights reserved.`
+      : `© ${currentYear} SN Global Group LLC. Tous droits réservés.`;
+  }
+
+  const sidebarCopyright = document.querySelector('#mobile-sidebar .sidebar-footer p:first-child');
+  if (sidebarCopyright) {
+    sidebarCopyright.innerText = `© ${currentYear} SN Global Group LLC.`;
   }
 
   // Social Popup Translations
@@ -571,17 +577,20 @@ function initTicketingSystem() {
   function performTicketSearch() {
     const isEn = currentLang === 'en';
     const id = ticketInput.value.trim().toUpperCase();
-    if (!id) {
-      resultContainer.innerHTML = `<p class="text-error"><i class="fa-solid fa-circle-exclamation"></i> ${isEn ? 'Please enter a valid ticket number (e.g., SN-XXXX).' : 'Veuillez entrer un numéro de ticket valide (Ex: SN-XXXX).'}</p>`;
+    
+    // Strict format validation to prevent malformed requests and injection attempts (e.g. XSS scripts)
+    const ticketIdRegex = /^SN-(SUPP|TRVL|INS)-[A-Z0-9]{4,6}$/;
+    if (!ticketIdRegex.test(id)) {
+      resultContainer.innerHTML = `<p class="text-error"><i class="fa-solid fa-circle-exclamation"></i> ${isEn ? 'Invalid format. Example: SN-INS-A8B9C2' : 'Format invalide. Exemple : SN-INS-A8B9C2'}</p>`;
       return;
     }
 
-    resultContainer.innerHTML = `<p class="text-muted"><i class="fa-solid fa-spinner fa-spin"></i> ${isEn ? 'Searching on server...' : 'Recherche sur le serveur...'}</p>`;
+    resultContainer.innerHTML = `<p class="text-muted"><i class="fa-solid fa-spinner fa-spin"></i> ${isEn ? 'Searching...' : 'Recherche en cours...'}</p>`;
 
     fetch(`/api/tickets/${id}`)
       .then(res => {
         if (res.status === 404) return null;
-        if (!res.ok) throw new Error('Server error');
+        if (!res.ok) throw new Error('Server response error');
         return res.json();
       })
       .then(ticket => {
@@ -676,7 +685,7 @@ function initTicketingSystem() {
       })
       .catch(err => {
         console.error('Failed to query ticket:', err);
-        resultContainer.innerHTML = `<p class="text-error"><i class="fa-solid fa-circle-exclamation"></i> ${isEn ? 'Failed to connect to the Baltimore database.' : 'Erreur de connexion avec la base de données de Baltimore.'}</p>`;
+        resultContainer.innerHTML = `<p class="text-error"><i class="fa-solid fa-circle-exclamation"></i> ${isEn ? 'A connection error occurred. Please try again later.' : 'Une erreur de connexion est survenue. Veuillez réessayer plus tard.'}</p>`;
       });
   }
 }
