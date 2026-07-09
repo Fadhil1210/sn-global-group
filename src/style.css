@@ -1020,6 +1020,7 @@ img {
   align-items: center;
   gap: 12px;
   font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .planner-form-card {
