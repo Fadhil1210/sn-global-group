@@ -2597,6 +2597,17 @@ img {
   animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Intermediate Laptop Layout Adjustments */
+@media (max-width: 1150px) {
+  #nav-menu ul {
+    gap: 18px;
+  }
+  .nav-item {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
+}
+
 /* RESPONSIVE DESIGN - MEDIA QUERIES */
 @media (max-width: 1024px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
@@ -2610,10 +2621,11 @@ img {
 }
 
 @media (max-width: 768px) {
-  /* Layout stacks */
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-  .destinations-grid { grid-template-columns: 1fr; }
-  .plans-grid { grid-template-columns: 1fr; }
+  /* Layout stacks - Keep 2 columns on tablet, stack only on mobile */
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .destinations-grid { grid-template-columns: repeat(2, 1fr); }
+  .plans-grid { grid-template-columns: repeat(2, 1fr); }
   
   /* Section Padding */
   .section-padding { padding: 50px 0; }
@@ -2634,7 +2646,21 @@ img {
   .gateway-center-badge { width: 100px; height: 100px; }
   .group-initials { font-size: 1.6rem; }
   
-  /* Heros scale down */
+  /* Heros scale down and expand dynamically on mobile to prevent header overlaps */
+  .holding-hero, .travel-hero, .insurance-hero {
+    height: auto !important;
+    min-height: 480px !important;
+    padding-top: 130px !important;
+    padding-bottom: 60px !important;
+  }
+  
+  .about-hero, .contact-hero, .blog-hero, .legal-hero {
+    height: auto !important;
+    min-height: 320px !important;
+    padding-top: 120px !important;
+    padding-bottom: 50px !important;
+  }
+
   .holding-hero h1, .travel-hero h1, .insurance-hero h1, .blog-hero h1, .contact-hero h1, .about-hero h1 {
     font-size: 2.2rem;
   }
@@ -2712,6 +2738,11 @@ img {
     .subtitle {
       font-size: 0.9rem !important;
     }
+    
+    /* Stack all grids to 1 column on small smartphones */
+    .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+    .destinations-grid { grid-template-columns: 1fr !important; }
+    .plans-grid { grid-template-columns: 1fr !important; }
   }
 
   /* Responsive Tab Selectors */
