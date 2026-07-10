@@ -3307,3 +3307,10 @@ img {
     padding: 30px 20px;
   }
 }
+
+/* Responsive typography fallback for mobile phones (disable justification to prevent large word gaps) */
+@media (max-width: 480px) {
+  .about-text p, .ceo-editorial-text, .typography p, .post-detail-body p {
+    text-align: left !important;
+  }
+}
