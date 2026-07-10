@@ -204,8 +204,25 @@ img {
 .hidden { display: none !important; }
 .bg-navy-light { background-color: var(--color-navy-light); }
 .bg-light { background-color: #EBF0F5; }
-.text-white { color: var(--color-white) !important; }
-.text-dark { color: var(--color-text-dark) !important; }
+.text-white,
+.text-white h1,
+.text-white h2,
+.text-white h3,
+.text-white h4,
+.text-white h5,
+.text-white h6 {
+  color: var(--color-white) !important;
+}
+
+.text-dark,
+.text-dark h1,
+.text-dark h2,
+.text-dark h3,
+.text-dark h4,
+.text-dark h5,
+.text-dark h6 {
+  color: var(--color-text-dark) !important;
+}
 
 /* BUTTONS */
 .btn {
