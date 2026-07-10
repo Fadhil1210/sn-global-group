@@ -204,6 +204,8 @@ img {
 .hidden { display: none !important; }
 .bg-navy-light { background-color: var(--color-navy-light); }
 .bg-light { background-color: #EBF0F5; }
+.text-white { color: var(--color-white) !important; }
+.text-dark { color: var(--color-text-dark) !important; }
 
 /* BUTTONS */
 .btn {
@@ -1827,6 +1829,7 @@ img {
 
 .post-detail-body p {
   margin-bottom: 1.6rem;
+  text-align: justify;
 }
 
 .post-detail-body h3 {
@@ -1907,6 +1910,7 @@ img {
   font-size: 1rem;
   color: var(--color-text-dark);
   margin-bottom: 16px;
+  text-align: justify;
 }
 
 .stats-grid {
@@ -2927,6 +2931,7 @@ img {
   line-height: 1.7;
   color: var(--color-text);
   margin-bottom: 20px;
+  text-align: justify;
 }
 .typography ul {
   list-style-type: disc;
@@ -3184,6 +3189,7 @@ img {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  text-align: justify;
 }
 
 .ceo-lead-paragraph {
