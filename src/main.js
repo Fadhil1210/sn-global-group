@@ -27,6 +27,40 @@ function renderAbout(container) {
     stat2Lbl: { en: "Satisfied Clients", fr: "Clients satisfaits" },
     stat3Num: { en: "120+", fr: "120+" },
     stat3Lbl: { en: "Destinations Covered", fr: "Destinations couvertes" },
+    
+    // CEO Message strings
+    ceoBadge: { en: "A Message from our Founder & CEO", fr: "Le Mot de la Fondatrice & CEO" },
+    ceoTitle: { en: "A Vision of Trust and Family Legacy", fr: "Confiance, Intégrité et Transmission" },
+    ceoP1: { 
+      en: "The foundation of SN Global Group LLC is rooted in a simple yet profound belief: travel possesses the unique power to transform lives, strengthen family bonds, and create unforgettable memories. In tandem, I believe every family deserves access to robust financial protection, enabling them to look toward the future with peace of mind.", 
+      fr: "La fondation de SN Global Group LLC repose sur une conviction profonde : le voyage a le pouvoir de transformer des vies, de rapprocher les familles et de sculpter des souvenirs impérissables. Parallèlement, je crois fermement que chaque foyer doit pouvoir accéder à une protection financière solide pour aborder l'avenir en toute sérénité."
+    },
+    ceoP2: { 
+      en: "Reflecting on my own journey and the experiences of countless families, I recognized how essential it is to have a trusted professional guiding you through life's major milestones. Whether designing a bespoke itinerary or securing your loved ones with tailored life insurance policies, our goal is to build long-term relationships established on honesty, transparency, and service excellence.", 
+      fr: "En observant mon propre parcours et les défis auxquels font face de nombreuses familles, j'ai mesuré l'importance cruciale d'être accompagné par un professionnel de confiance lors des grandes décisions de la vie. Qu'il s'agisse de concevoir une escapade sur mesure ou de prémunir ses proches grâce à une assurance vie adaptée, notre vocation dépasse la simple fourniture de services."
+    },
+    ceoP3: { 
+      en: "Establishing this group also represents the realization of a personal vision. It is the drive to secure financial independence for my family, construct a legacy for future generations, and demonstrate that diligence, integrity, and resolve can overcome any boundary. Every client who joins SN Global Group LLC becomes part of our extended family, and we pledge to support them with the highest degree of professionalism.", 
+      fr: "Bâtir ce groupe est également l'accomplissement d'une vision personnelle. C'est la volonté d'offrir une indépendance financière à ma famille, d'ériger un patrimoine durable pour les générations futures, et de transmettre la certitude que la persévérance, la rigueur professionnelle et la détermination permettent de repousser toutes les limites. Chez SN Global Group LLC, chaque client intègre notre famille."
+    },
+
+    // Vision 5 and 10 years
+    visionBadge: { en: "Strategic Horizons", fr: "Horizons Stratégiques" },
+    visionTitle: { en: "Our 5 & 10 Years Vision", fr: "Notre Vision à 5 et 10 Ans" },
+    vision5Title: { en: "5-Year Horizon: Strategic Growth", fr: "Horizon 5 Ans : Croissance Stratégique" },
+    vision5Bullet1: { en: "<strong>Regional Presence</strong>: Solidify our reputation as a trusted leader in Maryland and strategically expand our services to surrounding states.", fr: "<strong>Ancrage Régional</strong> : Consolider notre positionnement comme une référence de confiance dans le Maryland et étendre notre expertise aux États limitrophes." },
+    vision5Bullet2: { en: "<strong>Prestige & Volume</strong>: Deliver hundreds of hand-tailored travel experiences annually for families, couples, and organizations, while maintaining world-class service standards.", fr: "<strong>Prestige & Volume</strong> : Orchestrer chaque année des centaines d'itinéraires sur mesure pour les familles, les couples et les groupes corporatifs, en maintenant des standards de service client d'exception." },
+    vision5Bullet3: { en: "<strong>Compliance & Safety</strong>: Assist families in structuring their life insurance portfolios in strict compliance with state and federal regulations.", fr: "<strong>Régulation & Conformité</strong> : Conseiller et structurer les portefeuilles d'assurance vie de nos clients dans le strict respect des exigences réglementaires locales et fédérales." },
+    vision5Bullet4: { en: "<strong>Strategic Alliances</strong>: Build exclusive partnerships with premier travel providers, luxury hotels, cruise lines, and top-tier global insurers.", fr: "<strong>Partenariats Stratégiques</strong> : Sceller des alliances exclusives avec des marques de renommée mondiale dans les secteurs de l'hôtellerie de luxe, des compagnies de croisières et des grands assureurs mondiaux." },
+    vision5Bullet5: { en: "<strong>Talent Acquisition</strong>: Assemble a dedicated team of passionate advisors who embody our core values of integrity and distinction.", fr: "<strong>Équipe d'Excellence</strong> : Fédérer un réseau de conseillers passionnés, partageant nos exigences d'intégrité et de professionnalisme." },
+
+    vision10Title: { en: "10-Year Horizon: National Leadership", fr: "Horizon 10 Ans : Leadership National" },
+    vision10Bullet1: { en: "<strong>National Scale</strong>: Establish SN Global Group LLC as a premier national brand recognized across the United States for trust and distinction.", fr: "<strong>Envergure Nationale</strong> : Devenir une marque institutionnelle reconnue à l'échelle des États-Unis pour la qualité irréprochable de ses conseils." },
+    vision10Bullet2: { en: "<strong>Multi-Division Structuring</strong>: Serve thousands of loyal clients nationwide and develop specialized divisions under the SN Global Group umbrella.", fr: "<strong>Diversification</strong> : Servir des milliers de clients fidèles à travers le pays et structurer de nouvelles divisions spécialisées sous l'égide de SN Global Group." },
+    vision10Bullet3: { en: "<strong>Employer of Choice</strong>: Attract and retain elite travel designers and licensed financial service experts.", fr: "<strong>Pôle de Compétences</strong> : Être l'employeur de choix pour les spécialistes du voyage haut de gamme et les conseillers financiers certifiés." },
+    vision10Bullet4: { en: "<strong>Exclusive Travel Catalog</strong>: Expand our catalog with highly exclusive international circuits and prestigious group travel offerings.", fr: "<strong>Circuits Privatifs Exclusifs</strong> : Développer une collection de circuits internationaux signatures et de voyages de groupe de grand prestige." },
+    vision10Bullet5: { en: "<strong>Community Legacy</strong>: Champion local entrepreneurship, foster career opportunities, and bequeath a sustainable, ethical enterprise that future generations will be proud to carry forward.", fr: "<strong>Engagement Communautaire & Pérennité</strong> : Soutenir l'entrepreneuriat local, créer des opportunités professionnelles d'avenir et léguer une entreprise résiliente et éthique, fierté des générations futures." },
+
     h2Values: { en: "Our Founding Values", fr: "Nos Valeurs Fondatrices" },
     val1Title: { en: "Trust & Security", fr: "Confiance & Sécurité" },
     val1Desc: { en: "From Baltimore to Tokyo, we guarantee total financial and logistical security to our policyholders and travelers.", fr: "De Baltimore à Tokyo, nous garantissons une sécurité financière et logistique totale à nos assurés et voyageurs." },
@@ -50,6 +84,7 @@ function renderAbout(container) {
       </div>
     </section>
     
+    <!-- Presentation & Stats Section -->
     <section class="about-content section-padding">
       <div class="container grid grid-2">
         <div class="about-text animate-fade-in">
@@ -76,7 +111,32 @@ function renderAbout(container) {
         </div>
       </div>
     </section>
+
+    <!-- Word from the Founder & CEO -->
+    <section class="ceo-section section-padding bg-light">
+      <div class="container">
+        <div class="ceo-layout">
+          <div class="ceo-editorial-quote">
+            <span class="badge badge-gold">${t(text.ceoBadge)}</span>
+            <h2>${t(text.ceoTitle)}</h2>
+            <div class="ceo-quote-decoration">
+              <i class="fa-solid fa-quote-left gold-text"></i>
+            </div>
+          </div>
+          <div class="ceo-editorial-text">
+            <p class="ceo-lead-paragraph">${t(text.ceoP1)}</p>
+            <p>${t(text.ceoP2)}</p>
+            <p>${t(text.ceoP3)}</p>
+            <div class="ceo-signature">
+              <span class="signature-name">SN Global Group LLC</span>
+              <span class="signature-title">${isEn ? "Founder & Chief Executive Officer" : "Fondatrice & Directrice Générale"}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     
+    <!-- Core Founding Values -->
     <section class="values-section section-padding bg-navy-light text-white">
       <div class="container text-center">
         <h2>${t(text.h2Values)}</h2>
@@ -99,7 +159,50 @@ function renderAbout(container) {
         </div>
       </div>
     </section>
+
+    <!-- Strategic Vision 5 & 10 Years -->
+    <section class="strategic-vision-section section-padding bg-light">
+      <div class="container text-center">
+        <span class="badge badge-gold">${t(text.visionBadge)}</span>
+        <h2>${t(text.visionTitle)}</h2>
+        
+        <div class="vision-cards-container grid grid-2">
+          
+          <!-- Vision 5 Years Card -->
+          <div class="vision-card-details bg-navy-light text-white rounded shadow">
+            <div class="vision-card-header">
+              <i class="fa-solid fa-chart-line gold-text"></i>
+              <h3>${t(text.vision5Title)}</h3>
+            </div>
+            <ul class="vision-list">
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision5Bullet1)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision5Bullet2)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision5Bullet3)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision5Bullet4)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision5Bullet5)}</span></li>
+            </ul>
+          </div>
+
+          <!-- Vision 10 Years Card -->
+          <div class="vision-card-details bg-white text-dark rounded shadow" style="border: 1px solid #E2E8F0;">
+            <div class="vision-card-header">
+              <i class="fa-solid fa-earth-americas gold-text"></i>
+              <h3>${t(text.vision10Title)}</h3>
+            </div>
+            <ul class="vision-list" style="color: var(--color-text-dark);">
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision10Bullet1)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision10Bullet2)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision10Bullet3)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision10Bullet4)}</span></li>
+              <li><i class="fa-solid fa-circle-chevron-right gold-text"></i> <span>${t(text.vision10Bullet5)}</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
     
+    <!-- Baltimore HQ Map section -->
     <section class="baltimore-section section-padding">
       <div class="container grid grid-2 align-center">
         <div class="baltimore-visual">

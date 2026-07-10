@@ -3145,5 +3145,159 @@ img {
 .sectors-section .text-muted {
   color: rgba(255, 255, 255, 0.65) !important;
 }
+/* CEO Editorial Section Styles */
+.ceo-layout {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 60px;
+  align-items: start;
+  text-align: left;
+}
 
+.ceo-editorial-quote {
+  position: relative;
+  padding-right: 20px;
+}
 
+.ceo-editorial-quote h2 {
+  font-size: 2.2rem;
+  font-family: var(--font-title);
+  color: var(--color-navy);
+  margin-top: 15px;
+  line-height: 1.3;
+}
+
+.ceo-quote-decoration {
+  margin-top: 30px;
+  opacity: 0.15;
+}
+
+.ceo-quote-decoration i {
+  font-size: 6rem;
+}
+
+.ceo-editorial-text {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--color-text-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ceo-lead-paragraph {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  font-weight: 500;
+  color: var(--color-navy);
+  border-left: 3px solid var(--color-gold);
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.ceo-signature {
+  margin-top: 30px;
+  border-top: 1px solid #CBD5E1;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.signature-name {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.signature-title {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Strategic Vision Section Styles */
+.vision-cards-container {
+  margin-top: 40px;
+  gap: 40px;
+}
+
+.vision-card-details {
+  padding: 40px;
+  text-align: left;
+  border-radius: var(--border-radius-lg);
+  transition: var(--transition-smooth);
+}
+
+.vision-card-details:hover {
+  transform: translateY(-8px);
+}
+
+.vision-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding-bottom: 16px;
+}
+
+.vision-card-header i {
+  font-size: 2rem;
+}
+
+.vision-card-header h3 {
+  font-size: 1.3rem;
+  font-family: var(--font-title);
+  margin-bottom: 0;
+}
+
+.vision-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vision-list li {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.vision-list li i {
+  margin-top: 4px;
+  font-size: 0.95rem;
+}
+
+/* Responsive adjustments for CEO Section and Vision Cards */
+@media (max-width: 992px) {
+  .ceo-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .ceo-editorial-quote {
+    padding-right: 0;
+    text-align: center;
+  }
+  .ceo-quote-decoration {
+    display: none;
+  }
+  .ceo-lead-paragraph {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .vision-cards-container {
+    grid-template-columns: 1fr !important;
+    gap: 24px;
+  }
+  .vision-card-details {
+    padding: 30px 20px;
+  }
+}
