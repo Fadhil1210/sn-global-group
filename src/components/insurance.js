@@ -139,9 +139,15 @@ export function renderInsurance(container) {
   ];
 
   container.innerHTML = `
-    <!-- Insurance Hero -->
+    <!-- Insurance Hero with dynamic Ken Burns background carousel of protection themes -->
     <section class="insurance-hero">
-      <div class="insurance-hero-bg"></div>
+      <div class="insurance-hero-carousel">
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Happy Family -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Financial Consulting -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- New York Manhattan skyscrapers -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Premium Health Care -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- High-end Villa Estate -->
+      </div>
       <div class="insurance-hero-overlay"></div>
       <div class="container insurance-hero-content text-center">
         <span class="badge badge-gold">${t(text.badgeHero)}</span>

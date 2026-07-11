@@ -805,7 +805,7 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(13, 27, 42, 0.8) 0%, rgba(13, 27, 42, 0.95) 100%);
+  background: linear-gradient(to bottom, rgba(13, 27, 42, 0.4) 0%, rgba(10, 17, 24, 0.65) 100%);
 }
 
 .travel-hero-content {
@@ -1240,7 +1240,7 @@ img {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(10, 17, 24, 0.85) 0%, rgba(13, 27, 42, 0.98) 100%);
+  background: linear-gradient(to bottom, rgba(13, 27, 42, 0.4) 0%, rgba(10, 17, 24, 0.65) 100%);
 }
 
 .insurance-hero-content {
@@ -3398,8 +3398,10 @@ img {
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1) !important;
 }
 
-/* Holding Hero Background Slideshow Carousel */
-.holding-hero-carousel {
+/* Hero Background Slideshow Carousels (Holding, Travel, Insurance) */
+.holding-hero-carousel,
+.travel-hero-carousel,
+.insurance-hero-carousel {
   position: absolute;
   top: 0;
   left: 0;
@@ -3419,22 +3421,40 @@ img {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
-  animation: heroFade 40s infinite ease-in-out;
   transform-origin: center center;
 }
 
-/* Slide Delays for sequential 8-slide loop (each slide visible for ~5s in 40s loop) */
-.hero-slide:nth-child(1) { animation-delay: 0s; }
-.hero-slide:nth-child(2) { animation-delay: 5s; }
-.hero-slide:nth-child(3) { animation-delay: 10s; }
-.hero-slide:nth-child(4) { animation-delay: 15s; }
-.hero-slide:nth-child(5) { animation-delay: 20s; }
-.hero-slide:nth-child(6) { animation-delay: 25s; }
-.hero-slide:nth-child(7) { animation-delay: 30s; }
-.hero-slide:nth-child(8) { animation-delay: 35s; }
+/* 8-Slide Animation (Holding Hero - 40s loop) */
+.holding-hero-carousel .hero-slide {
+  animation: heroFade8 40s infinite ease-in-out;
+}
+.holding-hero-carousel .hero-slide:nth-child(1) { animation-delay: 0s; }
+.holding-hero-carousel .hero-slide:nth-child(2) { animation-delay: 5s; }
+.holding-hero-carousel .hero-slide:nth-child(3) { animation-delay: 10s; }
+.holding-hero-carousel .hero-slide:nth-child(4) { animation-delay: 15s; }
+.holding-hero-carousel .hero-slide:nth-child(5) { animation-delay: 20s; }
+.holding-hero-carousel .hero-slide:nth-child(6) { animation-delay: 25s; }
+.holding-hero-carousel .hero-slide:nth-child(7) { animation-delay: 30s; }
+.holding-hero-carousel .hero-slide:nth-child(8) { animation-delay: 35s; }
 
-/* Ken Burns slow zoom + crossfade animation (8 slides, 12.5% segment each) */
-@keyframes heroFade {
+/* 5-Slide Animation (Travel and Insurance Heroes - 25s loop) */
+.travel-hero-carousel .hero-slide,
+.insurance-hero-carousel .hero-slide {
+  animation: heroFade5 25s infinite ease-in-out;
+}
+.travel-hero-carousel .hero-slide:nth-child(1),
+.insurance-hero-carousel .hero-slide:nth-child(1) { animation-delay: 0s; }
+.travel-hero-carousel .hero-slide:nth-child(2),
+.insurance-hero-carousel .hero-slide:nth-child(2) { animation-delay: 5s; }
+.travel-hero-carousel .hero-slide:nth-child(3),
+.insurance-hero-carousel .hero-slide:nth-child(3) { animation-delay: 10s; }
+.travel-hero-carousel .hero-slide:nth-child(4),
+.insurance-hero-carousel .hero-slide:nth-child(4) { animation-delay: 15s; }
+.travel-hero-carousel .hero-slide:nth-child(5),
+.insurance-hero-carousel .hero-slide:nth-child(5) { animation-delay: 20s; }
+
+/* Ken Burns slow zoom + crossfade animation for 8 slides */
+@keyframes heroFade8 {
   0% {
     opacity: 0;
     transform: scale(1.02);
@@ -3446,6 +3466,27 @@ img {
     opacity: 1;
   }
   12.5% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Ken Burns slow zoom + crossfade animation for 5 slides */
+@keyframes heroFade5 {
+  0% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  4% {
+    opacity: 1;
+  }
+  16% {
+    opacity: 1;
+  }
+  20% {
     opacity: 0;
     transform: scale(1.08);
   }

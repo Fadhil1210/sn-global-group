@@ -81,9 +81,15 @@ export function renderTravel(container) {
   };
 
   container.innerHTML = `
-    <!-- Travel Hero -->
+    <!-- Travel Hero with dynamic Ken Burns background carousel of destinations -->
     <section class="travel-hero">
-      <div class="travel-hero-bg"></div>
+      <div class="travel-hero-carousel">
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Safari Kenya -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Zen Kyoto pagoda -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Maldives overwater villas -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Santorini white buildings -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Swiss Alps mountain peaks -->
+      </div>
       <div class="travel-hero-overlay"></div>
       <div class="container travel-hero-content text-center">
         <span class="badge badge-gold">${t(text.badgeHero)}</span>
