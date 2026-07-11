@@ -3331,3 +3331,69 @@ img {
     text-align: left !important;
   }
 }
+
+/* Responsive typography fallback for mobile phones (disable justification to prevent large word gaps) */
+@media (max-width: 480px) {
+  .about-text p, .ceo-editorial-text, .typography p, .post-detail-body p {
+    text-align: left !important;
+  }
+}
+
+/* Header z-index update to stay above Leaflet map layers and controls */
+#main-header {
+  z-index: 1100 !important;
+}
+
+/* Travel & Insurance Hero padding-top on PC/Tablets to prevent header overlapping the top content/badge */
+@media (min-width: 992px) {
+  .travel-hero, .insurance-hero {
+    padding-top: 80px;
+    box-sizing: border-box;
+  }
+}
+
+/* Responsive CTA Actions inside Blog details */
+@media (max-width: 768px) {
+  .cta-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  .cta-actions .btn {
+    width: 100%;
+  }
+  .post-detail-cta {
+    padding: 30px 20px;
+  }
+  .blog-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .blog-card-footer .btn-read-post {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Stacking Stats Grid vertically on mobile phones to prevent layout breaking */
+@media (max-width: 576px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  /* Prevent horizontal table overflow by wrapping cells and making it scrollable */
+  .tickets-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Highlight invalid inputs with standard red border */
+.form-control.is-invalid,
+.form-control-light.is-invalid {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1) !important;
+}

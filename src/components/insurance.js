@@ -2,6 +2,7 @@ import { lifeInsurance, travelInsurance } from '../data/insurancePolicies.js';
 import { currentLang, t } from '../utils/i18n.js';
 
 export function renderInsurance(container) {
+  try {
   const isEn = currentLang === 'en';
 
   const text = {
@@ -377,6 +378,20 @@ export function renderInsurance(container) {
   
   // Scroll to top
   window.scrollTo(0, 0);
+  } catch (err) {
+    console.error("Crash inside renderInsurance:", err);
+    container.innerHTML = `
+      <div class="container section-padding text-center" style="padding-top: 120px;">
+        <i class="fa-solid fa-triangle-exclamation text-error" style="font-size: 3rem; margin-bottom: 20px;"></i>
+        <h2 class="text-error" style="margin-bottom: 10px;">Une erreur est survenue lors du chargement de la page</h2>
+        <p style="color: var(--color-text-dark); max-width: 600px; margin: 0 auto 20px auto;">${err.message}</p>
+        <pre style="text-align: left; background: #fee2e2; padding: 15px; border-radius: 8px; max-width: 800px; margin: 0 auto; overflow-x: auto; color: #991b1b; font-family: monospace; font-size: 0.8rem; border: 1px solid #fca5a5;">${err.stack}</pre>
+      </div>
+    `;
+    setTimeout(() => {
+      container.classList.add('page-enter-active');
+    }, 40);
+  }
 }
 
 function setupTabs() {
@@ -446,18 +461,63 @@ function setupSimulator() {
   updateSimulatorInputs('travel');
 
   let activeTicket = null;
+  const leadForm = document.getElementById('insurance-quote-lead-form');
+  const leadSuccess = document.getElementById('quote-lead-success');
+  const resetLeadBtn = document.getElementById('btn-reset-quote-form');
+
+  function showFieldError(inputEl, errorMsg) {
+    inputEl.classList.add('is-invalid');
+    let errorEl = inputEl.parentNode.querySelector('.form-error-msg');
+    if (!errorEl) {
+      errorEl = document.createElement('p');
+      errorEl.className = 'form-error-msg text-error';
+      errorEl.style.fontSize = '0.72rem';
+      errorEl.style.marginTop = '4px';
+      errorEl.style.color = '#EF4444';
+      inputEl.parentNode.appendChild(errorEl);
+    }
+    errorEl.innerText = errorMsg;
+    errorEl.classList.remove('hidden');
+  }
 
   leadForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
+    // Reset validation states
+    leadForm.querySelectorAll('.form-error-msg').forEach(el => el.classList.add('hidden'));
+    leadForm.querySelectorAll('.form-control-light').forEach(el => el.classList.remove('is-invalid'));
+    
+    const nameInput = document.getElementById('quote-lead-name');
+    const emailInput = document.getElementById('quote-lead-email');
+    
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    
+    let hasError = false;
+    
+    if (name.length < 2 || name.length > 100) {
+      showFieldError(nameInput, currentLang === 'en'
+        ? 'Name must be between 2 and 100 characters.'
+        : 'Le nom doit contenir entre 2 et 100 caractères.');
+      hasError = true;
+    }
+    
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email) || email.length > 150) {
+      showFieldError(emailInput, currentLang === 'en'
+        ? 'Please enter a valid email address.'
+        : 'Veuillez saisir une adresse e-mail valide.');
+      hasError = true;
+    }
+    
+    if (hasError) return;
+
     // Simulate Premium Network loader
     const submitBtn = leadForm.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${currentLang === 'en' ? 'Calculating...' : 'Calcul en cours...'}`;
 
-    const name = document.getElementById('quote-lead-name').value.trim();
-    const email = document.getElementById('quote-lead-email').value.trim();
     const insType = simType.value;
     const planSelectedId = document.getElementById('sim-plan-select').value;
     const finalPrice = document.getElementById('sim-calculated-price').innerText;

@@ -249,17 +249,17 @@ export function renderGateway(container) {
         <p class="section-desc">${t(text.trustDesc)}</p>
         <div class="grid grid-3 holding-features">
           <div class="feature-item">
-            <i class="fa-solid fa-landmark gold-text"></i>
+            <i class="fa-solid fa-landmark"></i>
             <h3>${t(text.featCredTitle)}</h3>
             <p>${t(text.featCredDesc)}</p>
           </div>
           <div class="feature-item">
-            <i class="fa-solid fa-globe gold-text"></i>
+            <i class="fa-solid fa-globe"></i>
             <h3>${t(text.featReachTitle)}</h3>
             <p>${t(text.featReachDesc)}</p>
           </div>
           <div class="feature-item">
-            <i class="fa-solid fa-ticket-simple gold-text"></i>
+            <i class="fa-solid fa-ticket-simple"></i>
             <h3>${t(text.featSupportTitle)}</h3>
             <p>${t(text.featSupportDesc)}</p>
           </div>

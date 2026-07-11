@@ -240,15 +240,23 @@ function renderAbout(container) {
         maxZoom: 20
       }).addTo(map);
       
-      // Add marker at Baltimore Headquarters
+      // Add marker at Baltimore Headquarters with directions popup
       const marker = L.marker([lat, lng]).addTo(map);
       marker.bindPopup(`
-        <div style="font-family: 'Poppins', sans-serif; font-size: 0.8rem; color: var(--color-navy);">
-          <strong style="color: var(--color-gold-dark);">SN Global Group LLC</strong><br>
+        <div style="font-family: 'Poppins', sans-serif; font-size: 0.85rem; color: #1E293B; line-height: 1.5;">
+          <strong style="color: #D4AF37; font-size: 0.9rem;">SN Global Group LLC</strong><br>
           100 N Charles St, Baltimore, MD 21201<br>
-          <span style="font-weight: 600;">Baltimore HQ</span>
+          <span style="font-weight: 600; display: inline-block; margin-top: 2px;">Baltimore HQ</span><br>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=100+N+Charles+St,+Baltimore,+MD+21201,+USA" target="_blank" style="display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; color: #D4AF37; text-decoration: underline; font-weight: 600;">
+            <i class="fa-solid fa-diamond-turn-right"></i> Directions (Google Maps)
+          </a>
         </div>
       `).openPopup();
+
+      // Open Google Maps directions in new tab on direct marker click
+      marker.on('click', () => {
+        window.open('https://www.google.com/maps/dir/?api=1&destination=100+N+Charles+St,+Baltimore,+MD+21201,+USA', '_blank');
+      });
     }
   }, 150);
 

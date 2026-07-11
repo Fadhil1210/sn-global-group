@@ -72,15 +72,65 @@ app.use(helmet({
   }
 }));
 
-// Configure rate limiter to prevent abuse (DoS/brute force)
-const limiter = rateLimit({
+// Strict API Rate Limiter (to prevent brute-force, ticket spam, and SMTP exhaustion)
+const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 300, // Limit each IP to 300 requests per 15 minutes
-  standardHeaders: true, // Return rate limit info in headers
-  legacyHeaders: false, // Disable legacy headers
-  message: 'Too many requests from this IP, please try again later.'
+  max: 40, // Limit each IP to 40 requests per 15 minutes on API endpoints
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests on the API, please try again in 15 minutes.' }
 });
-app.use(limiter);
+
+// Relaxed global rate limiter for static files (prevents browser block on page refresh)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1500, // 1500 requests per 15 minutes
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many connection requests, please try again later.'
+});
+
+// Whitelisting origin middleware to prevent cross-site request abuse (CORS & Referer check)
+const whitelistedOrigins = [
+  'snglobalgroup.online',
+  'www.snglobalgroup.online',
+  'localhost',
+  '127.0.0.1'
+];
+
+app.use((req, res, next) => {
+  // CORS configuration
+  const origin = req.headers.origin || '';
+  const isAllowed = whitelistedOrigins.some(domain => origin.includes(domain));
+  if (isAllowed) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  // Strict origin/referer check for API routes in production to prevent script abuse
+  if (req.path.startsWith('/api/') && process.env.NODE_ENV === 'production') {
+    const referer = req.headers.referer || '';
+    const originHeader = req.headers.origin || '';
+    const matchesWhitelist = whitelistedOrigins.some(domain => {
+      return originHeader.includes(domain) || referer.includes(domain);
+    });
+    
+    if (!matchesWhitelist) {
+      console.warn(`Blocked request from untrusted origin: Origin=${originHeader}, Referer=${referer}`);
+      return res.status(403).json({ error: 'Access denied: Untrusted request origin.' });
+    }
+  }
+
+  next();
+});
+
+app.use('/api/', apiLimiter);
+app.use(globalLimiter);
 
 // --- Local File Database Helper Functions ---
 function readTickets() {
@@ -197,6 +247,8 @@ async function sendEmailNotification(ticket) {
     console.log(`[SMTP Notification skipped] Ticket ${ticket.id} stored in database. SMTP parameters missing in env.`);
     return;
   }
+  const resolvedIp = await resolveIPv4(SMTP_HOST.trim());
+  console.log(`[SMTP] Resolved ${SMTP_HOST} to IPv4: ${resolvedIp}`);
 
   const primaryPort = parseInt(String(SMTP_PORT).trim() || '587');
   
@@ -210,9 +262,6 @@ async function sendEmailNotification(ticket) {
     console.log(`Primary port ${primaryPort} failed or timed out. Trying fallback port ${fallbackPort}...`);
     await attemptSend(fallbackPort);
   }
-
-  const resolvedIp = await resolveIPv4(SMTP_HOST.trim());
-  console.log(`[SMTP] Resolved ${SMTP_HOST} to IPv4: ${resolvedIp}`);
 
   async function attemptSend(port) {
     const isSecure = port === 465;
@@ -287,38 +336,97 @@ async function sendEmailNotification(ticket) {
 // --- API Endpoint Routes ---
 
 // Create ticket (Contact, Travel Quote, Insurance Quote)
+// HTML Sanitization helper to prevent XSS injection
+function sanitizeHTML(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
 app.post('/api/tickets', async (req, res) => {
-  const { name, email, service, subject, message, status, date, details } = req.body;
+  const { name, email, service, subject, message, details } = req.body;
 
   if (!name || !email || !service || !subject || !message) {
     return res.status(400).json({ error: 'Missing required ticket parameters' });
   }
 
-  // Server-side email format validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  // Server-side strict service whitelist validation
+  const allowedServices = ['travel', 'insurance', 'corporate', 'careers'];
+  if (!allowedServices.includes(String(service).trim().toLowerCase())) {
+    return res.status(400).json({ error: 'Invalid concerned service/department value' });
+  }
+
+  // Server-side strict RFC-compliant email validation
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(String(email).trim()) || String(email).length > 150) {
     return res.status(400).json({ error: 'Invalid email address format' });
   }
 
-  // Generate a cryptographically secure 6-character hex suffix (16.7 million combinations per service)
-  // This blocks brute force/scanning IDOR security vulnerabilities.
+  // Text length validations
+  const cleanName = String(name).trim();
+  const cleanSubject = String(subject).trim();
+  const cleanMessage = String(message).trim();
+
+  if (cleanName.length < 2 || cleanName.length > 100) {
+    return res.status(400).json({ error: 'Name must be between 2 and 100 characters' });
+  }
+
+  if (cleanSubject.length < 4 || cleanSubject.length > 150) {
+    return res.status(400).json({ error: 'Subject must be between 4 and 150 characters' });
+  }
+
+  if (cleanMessage.length < 10 || cleanMessage.length > 3000) {
+    return res.status(400).json({ error: 'Message must be between 10 and 3000 characters' });
+  }
+
+  // Sanitize all inputs to make XSS injection completely inert
+  const sanitizedName = sanitizeHTML(cleanName);
+  const sanitizedEmail = sanitizeHTML(String(email).trim().toLowerCase());
+  const sanitizedService = sanitizeHTML(String(service).trim().toLowerCase());
+  const sanitizedSubject = sanitizeHTML(cleanSubject);
+  const sanitizedMessage = sanitizeHTML(cleanMessage);
+
+  // Generate a secure, cryptographically random 6-character suffix (IDOR protection)
   const secureSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
   let prefix = 'SN-SUPP';
-  if (service === 'travel') prefix = 'SN-TRVL';
-  else if (service === 'insurance') prefix = 'SN-INS';
+  if (sanitizedService === 'travel') prefix = 'SN-TRVL';
+  else if (sanitizedService === 'insurance') prefix = 'SN-INS';
 
   const ticketId = `${prefix}-${secureSuffix}`;
 
+  // Sanitize any extra fields in details object
+  const sanitizedDetails = {};
+  if (details && typeof details === 'object') {
+    for (const [key, value] of Object.entries(details)) {
+      const safeKey = sanitizeHTML(key);
+      if (typeof value === 'string') {
+        sanitizedDetails[safeKey] = sanitizeHTML(value);
+      } else if (typeof value === 'object' && value !== null) {
+        sanitizedDetails[safeKey] = {};
+        for (const [subKey, subVal] of Object.entries(value)) {
+          sanitizedDetails[safeKey][sanitizeHTML(subKey)] = typeof subVal === 'string' ? sanitizeHTML(subVal) : subVal;
+        }
+      } else {
+        sanitizedDetails[safeKey] = value;
+      }
+    }
+  }
+
   const newTicket = {
     id: ticketId,
-    name,
-    email,
-    service,
-    subject,
-    message,
-    status: 'Nouveau', // Always force server-side initialization to prevent status hijacking
-    date: new Date().toLocaleString(), // Always force server-side timestamp to prevent chronological manipulation
-    details: details || {}
+    name: sanitizedName,
+    email: sanitizedEmail,
+    service: sanitizedService,
+    subject: sanitizedSubject,
+    message: sanitizedMessage,
+    status: 'Nouveau', // Always force server-side initialization
+    date: new Date().toLocaleString(), // Always force server-side timestamp
+    details: sanitizedDetails
   };
 
   const tickets = readTickets();
@@ -337,6 +445,24 @@ app.post('/api/tickets', async (req, res) => {
   res.status(201).json(newTicket);
 });
 
+// PII Data Masking helper functions for GDPR & CCPA compliance
+function maskEmail(email) {
+  if (!email || !email.includes('@')) return email;
+  const [local, domain] = email.split('@');
+  if (local.length <= 2) {
+    return `${local.substring(0, 1)}***@${domain}`;
+  }
+  return `${local.substring(0, 2)}***${local.substring(local.length - 1)}@${domain}`;
+}
+
+function maskName(name) {
+  if (!name) return name;
+  return name.split(' ').map(part => {
+    if (part.length <= 2) return `${part.substring(0, 1)}*`;
+    return `${part.substring(0, 1)}***${part.substring(part.length - 1)}`;
+  }).join(' ');
+}
+
 // Query ticket by ID (with dynamic status progression simulation)
 app.get('/api/tickets/:id', (req, res) => {
   const { id } = req.params;
@@ -351,8 +477,6 @@ app.get('/api/tickets/:id', (req, res) => {
   let changed = false;
 
   try {
-    // ticket.date might contain slashes/spaces depending on locales. Let's parse it safely
-    // Fallback if parsing fails
     const cleanDateStr = ticket.date.replace(/,/g, '');
     const createdDate = new Date(cleanDateStr);
     const now = new Date();
@@ -377,7 +501,14 @@ app.get('/api/tickets/:id', (req, res) => {
     writeTickets(tickets);
   }
 
-  res.json(ticket);
+  // Return masked ticket to protect private customer data from unauthorized lookup
+  const maskedTicket = {
+    ...ticket,
+    name: maskName(ticket.name),
+    email: maskEmail(ticket.email)
+  };
+
+  res.json(maskedTicket);
 });
 
 // SMTP Diagnostic Debug Endpoint (Protected with secure token in production)

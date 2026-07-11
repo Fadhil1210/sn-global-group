@@ -199,7 +199,7 @@ export function renderContact(container) {
           <p class="section-desc">${t(text.descClient)}</p>
         </div>
         
-        <div class="my-tickets-card max-width-800" id="my-tickets-list-container">
+        <div class="my-tickets-card" id="my-tickets-list-container">
           <!-- Filled dynamically by JS -->
         </div>
       </div>
@@ -305,19 +305,85 @@ export function initContactForm() {
   
   if (!form) return;
 
+  function showFieldError(inputEl, errorMsg) {
+    inputEl.classList.add('is-invalid');
+    let errorEl = inputEl.parentNode.querySelector('.form-error-msg');
+    if (!errorEl) {
+      errorEl = document.createElement('p');
+      errorEl.className = 'form-error-msg text-error';
+      errorEl.style.fontSize = '0.75rem';
+      errorEl.style.marginTop = '4px';
+      errorEl.style.fontWeight = '500';
+      inputEl.parentNode.appendChild(errorEl);
+    }
+    errorEl.innerText = errorMsg;
+    errorEl.classList.remove('hidden');
+  }
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     
+    // Reset validation states
+    form.querySelectorAll('.form-error-msg').forEach(el => el.classList.add('hidden'));
+    form.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-invalid'));
+    
+    const nameInput = document.getElementById('contact-name');
+    const emailInput = document.getElementById('contact-email');
+    const serviceInput = document.getElementById('contact-service');
+    const subjectInput = document.getElementById('contact-subject');
+    const messageInput = document.getElementById('contact-message');
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const service = serviceInput.value;
+    const subject = subjectInput.value.trim();
+    const message = messageInput.value.trim();
+
+    let hasError = false;
+
+    // Client-side strict validation
+    if (name.length < 2 || name.length > 100) {
+      showFieldError(nameInput, currentLang === 'en' 
+        ? 'Name must be between 2 and 100 characters.' 
+        : 'Le nom doit contenir entre 2 et 100 caractères.');
+      hasError = true;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email) || email.length > 150) {
+      showFieldError(emailInput, currentLang === 'en' 
+        ? 'Please enter a valid email address.' 
+        : 'Veuillez saisir une adresse e-mail valide.');
+      hasError = true;
+    }
+
+    if (!service) {
+      showFieldError(serviceInput, currentLang === 'en' 
+        ? 'Please select the concerned department.' 
+        : 'Veuillez sélectionner le service concerné.');
+      hasError = true;
+    }
+
+    if (subject.length < 4 || subject.length > 150) {
+      showFieldError(subjectInput, currentLang === 'en' 
+        ? 'Subject must be between 4 and 150 characters.' 
+        : 'Le sujet doit contenir entre 4 et 150 caractères.');
+      hasError = true;
+    }
+
+    if (message.length < 10 || message.length > 3000) {
+      showFieldError(messageInput, currentLang === 'en' 
+        ? 'Message must be between 10 and 3000 characters.' 
+        : 'Le message doit contenir entre 10 et 3000 caractères.');
+      hasError = true;
+    }
+
+    if (hasError) return;
+
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${currentLang === 'en' ? 'Sending...' : 'Envoi en cours...'}`;
-
-    const name = document.getElementById('contact-name').value.trim();
-    const email = document.getElementById('contact-email').value.trim();
-    const service = document.getElementById('contact-service').value;
-    const subject = document.getElementById('contact-subject').value.trim();
-    const message = document.getElementById('contact-message').value.trim();
 
     fetch('/api/tickets', {
       method: 'POST',
@@ -330,7 +396,6 @@ export function initContactForm() {
         service,
         subject,
         message,
-        date: new Date().toLocaleString(currentLang === 'en' ? 'en-US' : 'fr-FR'),
         details: {}
       })
     })

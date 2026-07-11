@@ -198,6 +198,13 @@ export function renderBlog(container) {
             ${postTags.map(tg => `<span class="post-tag">#${tg}</span>`).join(' ')}
           </div>
           
+          <!-- Bottom back button to improve UX -->
+          <div style="margin-top: 30px; text-align: left;">
+            <button id="btn-back-to-blog-bottom" class="btn btn-outline-navy btn-sm btn-back-blog">
+              <i class="fa-solid fa-arrow-left"></i> ${t(text.btnBack)}
+            </button>
+          </div>
+          
           <div class="post-detail-cta bg-navy-light text-white rounded shadow">
             <h3>${t(text.ctaTitle)}</h3>
             <p>${t(text.ctaDesc)}</p>
@@ -215,6 +222,14 @@ export function renderBlog(container) {
       activePostId = null;
       render();
     });
+
+    const bottomBackBtn = document.getElementById('btn-back-to-blog-bottom');
+    if (bottomBackBtn) {
+      bottomBackBtn.addEventListener('click', () => {
+        activePostId = null;
+        render();
+      });
+    }
 
     window.scrollTo(0, 0);
   }
