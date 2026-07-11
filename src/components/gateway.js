@@ -144,9 +144,15 @@ export function renderGateway(container) {
   };
 
   container.innerHTML = `
-    <!-- Holding Hero -->
+    <!-- Holding Hero with dynamic Ken Burns background carousel of world destinations -->
     <section class="holding-hero">
-      <div class="holding-hero-bg"></div>
+      <div class="holding-hero-carousel">
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Paris -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- New York -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Tokyo -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Sydney -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1522083165195-342750297f4e?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Rome / Venice -->
+      </div>
       <div class="holding-hero-overlay"></div>
       <div class="container holding-hero-content text-center">
         <div class="holding-hero-logo animate-fade-in">

@@ -3397,3 +3397,56 @@ img {
   border-color: #EF4444 !important;
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1) !important;
 }
+
+/* Holding Hero Background Slideshow Carousel */
+.holding-hero-carousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  animation: heroFade 25s infinite ease-in-out;
+  transform-origin: center center;
+}
+
+/* Slide Delays for sequential 5-slide loop (each slide visible for ~5s in 25s loop) */
+.hero-slide:nth-child(1) { animation-delay: 0s; }
+.hero-slide:nth-child(2) { animation-delay: 5s; }
+.hero-slide:nth-child(3) { animation-delay: 10s; }
+.hero-slide:nth-child(4) { animation-delay: 15s; }
+.hero-slide:nth-child(5) { animation-delay: 20s; }
+
+/* Ken Burns slow zoom + crossfade animation */
+@keyframes heroFade {
+  0% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  4% {
+    opacity: 1;
+  }
+  16% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0;
+  }
+}

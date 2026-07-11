@@ -26,8 +26,10 @@ export function getHoldingLogo(scheme = 'dark', width = '100%', height = 'auto')
   const goldColor = COLORS.gold;
   const subtextColor = scheme === 'light' ? 'rgba(245, 247, 250, 0.7)' : 'rgba(13, 27, 42, 0.8)';
   
+  const heightAttr = height && height !== 'auto' ? `height="${height}"` : '';
+  
   return `
-    <svg viewBox="0 0 400 170" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+    <svg viewBox="0 0 400 170" width="${width}" ${heightAttr} xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
       <!-- Serif Monogram SN -->
       ${getSNLetters(textColor, goldColor, 1, 0, -5)}
       
@@ -53,8 +55,10 @@ export function getTravelLogo(scheme = 'dark', width = '100%', height = 'auto') 
   const goldColor = COLORS.gold;
   const subtextColor = scheme === 'light' ? 'rgba(245, 247, 250, 0.7)' : 'rgba(13, 27, 42, 0.8)';
   
+  const heightAttr = height && height !== 'auto' ? `height="${height}"` : '';
+  
   return `
-    <svg viewBox="0 0 400 170" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+    <svg viewBox="0 0 400 170" width="${width}" ${heightAttr} xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
       <!-- Serif Monogram SN -->
       ${getSNLetters(textColor, goldColor, 1, -10, -5)}
       
@@ -82,8 +86,10 @@ export function getInsuranceLogo(scheme = 'dark', width = '100%', height = 'auto
   const goldColor = COLORS.gold;
   const subtextColor = scheme === 'light' ? 'rgba(245, 247, 250, 0.7)' : 'rgba(13, 27, 42, 0.8)';
   
+  const heightAttr = height && height !== 'auto' ? `height="${height}"` : '';
+  
   return `
-    <svg viewBox="0 0 400 170" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+    <svg viewBox="0 0 400 170" width="${width}" ${heightAttr} xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
       <!-- Serif Monogram SN -->
       ${getSNLetters(textColor, goldColor, 1, -20, -5)}
       
