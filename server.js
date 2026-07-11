@@ -94,6 +94,7 @@ const globalLimiter = rateLimit({
 const whitelistedOrigins = [
   'snglobalgroup.online',
   'www.snglobalgroup.online',
+  'onrender.com',
   'localhost',
   '127.0.0.1'
 ];
