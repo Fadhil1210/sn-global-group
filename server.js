@@ -102,9 +102,15 @@ const whitelistedOrigins = [
 app.use((req, res, next) => {
   // CORS configuration
   const origin = req.headers.origin || '';
-  const isAllowed = whitelistedOrigins.some(domain => origin.includes(domain));
-  if (isAllowed) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
+  if (origin) {
+    const isAllowed = whitelistedOrigins.some(domain => origin.includes(domain));
+    if (isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+  } else {
+    const host = req.headers.host || '';
+    const protocol = req.secure ? 'https' : 'http';
+    res.setHeader('Access-Control-Allow-Origin', `${protocol}://${host}`);
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
@@ -117,12 +123,21 @@ app.use((req, res, next) => {
   if (req.path.startsWith('/api/') && process.env.NODE_ENV === 'production') {
     const referer = req.headers.referer || '';
     const originHeader = req.headers.origin || '';
-    const matchesWhitelist = whitelistedOrigins.some(domain => {
-      return originHeader.includes(domain) || referer.includes(domain);
-    });
+    const host = req.headers.host || '';
+    
+    let matchesWhitelist = false;
+    
+    if (originHeader) {
+      matchesWhitelist = whitelistedOrigins.some(domain => originHeader.includes(domain));
+    } else if (referer) {
+      matchesWhitelist = whitelistedOrigins.some(domain => referer.includes(domain));
+    } else {
+      // Fallback to Host header if both Referer and Origin are omitted (common in same-origin GET requests)
+      matchesWhitelist = whitelistedOrigins.some(domain => host.includes(domain));
+    }
     
     if (!matchesWhitelist) {
-      console.warn(`Blocked request from untrusted origin: Origin=${originHeader}, Referer=${referer}`);
+      console.warn(`Blocked request from untrusted origin: Origin=${originHeader}, Referer=${referer}, Host=${host}`);
       return res.status(403).json({ error: 'Access denied: Untrusted request origin.' });
     }
   }
