@@ -147,11 +147,14 @@ export function renderGateway(container) {
     <!-- Holding Hero with dynamic Ken Burns background carousel of world destinations -->
     <section class="holding-hero">
       <div class="holding-hero-carousel">
-        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Paris -->
-        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- New York -->
-        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Tokyo -->
-        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Sydney -->
-        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1522083165195-342750297f4e?auto=format&fit=crop&w=1600&q=80');" aria-hidden="true"></div> <!-- Rome / Venice -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Paris -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- New York -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Tokyo -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Sydney -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1522083165195-342750297f4e?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Rome / Venice -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Dubai -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Pyramids of Egypt -->
+        <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1463133644170-c8f9fa4b8405?auto=format&fit=crop&w=1920&q=80');" aria-hidden="true"></div> <!-- Niagara Falls -->
       </div>
       <div class="holding-hero-overlay"></div>
       <div class="container holding-hero-content text-center">
