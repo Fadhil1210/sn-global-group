@@ -30,32 +30,14 @@ export function renderMedia(container) {
     filterCorp: { en: "Corporate", fr: "Groupe" },
     downloadBtn: { en: "Download FHD", fr: "Télécharger FHD" },
     socialIntro: {
-      en: "Stay connected with SN Global Group. Below is our real-time social feed from Facebook and LinkedIn updates.",
-      fr: "Restez connecté avec SN Global Group. Suivez en temps réel nos actualités et publications officielles Facebook et LinkedIn."
+      en: "Stay connected with SN Global Group. Below is our real-time social feed from Facebook.",
+      fr: "Restez connecté avec SN Global Group. Suivez en temps réel nos actualités et publications officielles Facebook."
     },
     visitFacebook: { en: "Visit Facebook Page", fr: "Visiter notre page Facebook" },
-    visitLinkedIn: { en: "Visit LinkedIn Company", fr: "Visiter notre page LinkedIn" },
-    docsIntro: {
-      en: "Official publications, press kits, and corporate assets available for download.",
-      fr: "Retrouvez les publications officielles, dossiers de presse et documents corporatifs disponibles au téléchargement."
-    },
-    doc1Title: {
-      en: "SN Global Group LLC - Corporate Presentation 2026",
-      fr: "SN Global Group LLC - Présentation Institutionnelle 2026"
-    },
-    doc1Desc: {
-      en: "PDF brochure detailing the history, operations, and structure of the Baltimore holding.",
-      fr: "Brochure PDF détaillant l'histoire, les opérations et la structure de la holding de Baltimore."
-    },
-    doc2Title: {
-      en: "Press Release - Launch of SN Global Insurance",
-      fr: "Communiqué de Presse - Lancement de SN Global Insurance"
-    },
-    doc2Desc: {
-      en: "Official press release regarding the launch of our medical and life insurance branch in the USA.",
-      fr: "Communiqué officiel relatif au déploiement de notre offre santé et prévoyance aux États-Unis."
-    },
-    docDownload: { en: "Download PDF", fr: "Télécharger PDF" }
+    noDocs: {
+      en: "No documents available at the moment. Please check back later.",
+      fr: "Aucun document disponible pour le moment. Veuillez réessayer ultérieurement."
+    }
   };
 
   // 8 High Definition FHD images (w=1920)
@@ -129,6 +111,48 @@ export function renderMedia(container) {
       category: "insurance",
       url: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80",
       resolution: "1920x1280"
+    },
+    {
+      id: 11,
+      title: { en: "Paradise Island Beach - Bora Bora", fr: "Plage Paradisiaque - Bora Bora" },
+      category: "travel",
+      url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80",
+      resolution: "1920x1080"
+    },
+    {
+      id: 12,
+      title: { en: "Luxury Overwater Villas - Maldives", fr: "Villas de Luxe sur Pilotis - Maldives" },
+      category: "travel",
+      url: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=1920&q=80",
+      resolution: "1920x1080"
+    },
+    {
+      id: 13,
+      title: { en: "Infinity Pool Oasis - Santorini", fr: "Piscine à Débordement - Santorin" },
+      category: "travel",
+      url: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1920&q=80",
+      resolution: "1920x1080"
+    },
+    {
+      id: 14,
+      title: { en: "Luxury Cruise Ship at Sea", fr: "Paquebot de Croisière de Prestige" },
+      category: "travel",
+      url: "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=1920&q=80",
+      resolution: "1920x1080"
+    },
+    {
+      id: 15,
+      title: { en: "Superyacht in Amalfi Coast", fr: "Superyacht Privé - Côte Amalfitaine" },
+      category: "travel",
+      url: "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=1920&q=80",
+      resolution: "1920x1080"
+    },
+    {
+      id: 16,
+      title: { en: "Grand Palace Hotel Lobby", fr: "Palace de Prestige - Hall d'Entrée" },
+      category: "travel",
+      url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80",
+      resolution: "1920x1080"
     }
   ];
 
@@ -180,10 +204,7 @@ export function renderMedia(container) {
                 </div>
                 <div class="gallery-info" style="padding: 16px;">
                   <span class="resolution-badge" style="font-size: 0.7rem; font-weight: 600; background: #f1f5f9; color: #64748b; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px;">${img.resolution} FHD</span>
-                  <h4 style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--color-navy); margin-bottom: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t(img.title)}</h4>
-                  <a href="${img.url}" download="${img.category}_image.jpg" class="btn btn-gold btn-sm" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> ${t(text.downloadBtn)}
-                  </a>
+                  <h4 style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--color-navy); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t(img.title)}</h4>
                 </div>
               </div>
             `).join('')}
@@ -261,36 +282,9 @@ export function renderMedia(container) {
 
         <!-- TAB 3: DOCUMENTS -->
         <div id="tab-docs" class="media-tab-content" style="display: none;">
-          <p style="text-align: center; max-width: 600px; margin: 0 auto 40px; font-size: 0.95rem; color: var(--color-text-dark);">${t(text.docsIntro)}</p>
-          
-          <div class="documents-list" style="display: flex; flex-direction: column; gap: 20px; max-width: 800px; margin: 0 auto;">
-            <!-- Document Item 1 -->
-            <div class="doc-card" style="background: #fff; padding: 20px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-gold); display: flex; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <i class="fa-solid fa-file-pdf text-error" style="font-size: 2.2rem;"></i>
-                <div>
-                  <h4 style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--color-navy); margin-bottom: 4px;">${t(text.doc1Title)}</h4>
-                  <p style="font-size: 0.78rem; color: var(--color-text-dark);">${t(text.doc1Desc)}</p>
-                </div>
-              </div>
-              <button class="btn btn-outline-navy btn-sm btn-doc-download" data-doc="presentation_2026.pdf" style="white-space: nowrap;">
-                <i class="fa-solid fa-download"></i> ${t(text.docDownload)}
-              </button>
-            </div>
-
-            <!-- Document Item 2 -->
-            <div class="doc-card" style="background: #fff; padding: 20px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--color-gold); display: flex; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-              <div style="display: flex; align-items: center; gap: 15px;">
-                <i class="fa-solid fa-file-pdf text-error" style="font-size: 2.2rem;"></i>
-                <div>
-                  <h4 style="font-family: 'Poppins', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--color-navy); margin-bottom: 4px;">${t(text.doc2Title)}</h4>
-                  <p style="font-size: 0.78rem; color: var(--color-text-dark);">${t(text.doc2Desc)}</p>
-                </div>
-              </div>
-              <button class="btn btn-outline-navy btn-sm btn-doc-download" data-doc="launch_press_release.pdf" style="white-space: nowrap;">
-                <i class="fa-solid fa-download"></i> ${t(text.docDownload)}
-              </button>
-            </div>
+          <div style="text-align: center; padding: 40px 20px; background: #fff; border-radius: var(--border-radius-sm); border: 1px dashed #cbd5e1;">
+            <i class="fa-solid fa-folder-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i>
+            <p style="font-size: 1.05rem; font-weight: 500; color: var(--color-navy); margin: 0;">${t(text.noDocs)}</p>
           </div>
         </div>
       </div>
@@ -342,7 +336,6 @@ export function renderMedia(container) {
   const lightbox = document.getElementById('lightbox-modal');
   const lightboxImg = document.getElementById('lightbox-image');
   const lightboxCaption = document.getElementById('lightbox-caption');
-  const lightboxDownload = document.getElementById('lightbox-download-link');
 
   if (imageContainers && lightbox && lightboxImg) {
     imageContainers.forEach(box => {
@@ -353,29 +346,9 @@ export function renderMedia(container) {
 
         lightboxImg.src = fullUrl;
         lightboxCaption.innerText = itemInfo;
-        lightboxDownload.href = fullUrl;
         
         lightbox.classList.add('open');
       });
     });
   }
-
-  // 4. Document Download simulations
-  container.querySelectorAll('.btn-doc-download').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const fileName = btn.getAttribute('data-doc');
-      alert(isEn 
-        ? `Preparing file "${fileName}" for download...` 
-        : `Préparation du téléchargement du fichier "${fileName}"...`);
-      
-      // Simulate file download by creating a fake text file
-      const element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(`Mock PDF content for ${fileName}`));
-      element.setAttribute('download', fileName);
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    });
-  });
 }
