@@ -46,6 +46,44 @@
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="/src/style.css">
+
+  <!-- Structured Data / JSON-LD (Search Engine Trust & Verification) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SN Global Group LLC",
+    "url": "https://snglobalgroup.online/",
+    "logo": "https://snglobalgroup.online/favicon.svg",
+    "description": "An American holding company headquartered in Baltimore, directing subsidiaries in bespoke luxury travel and comprehensive health and life insurance.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "100 N Charles St",
+      "addressLocality": "Baltimore",
+      "addressRegion": "MD",
+      "postalCode": "21201",
+      "addressCountry": "US"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+1-443-250-2629",
+      "contactType": "customer service",
+      "availableLanguage": ["English", "French"]
+    },
+    "subOrganization": [
+      {
+        "@type": "TravelAgency",
+        "name": "SN Global Travel",
+        "description": "Bespoke luxury travel designer and planner."
+      },
+      {
+        "@type": "InsuranceAgency",
+        "name": "SN Global Insurance",
+        "description": "Comprehensive health, life and pension insurance solutions in the USA."
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
