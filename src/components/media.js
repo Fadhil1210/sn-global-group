@@ -215,9 +215,9 @@ export function renderMedia(container) {
         <div id="tab-social" class="media-tab-content" style="display: none;">
           <p style="text-align: center; max-width: 600px; margin: 0 auto 30px; font-size: 0.95rem; color: var(--color-text-dark);">${t(text.socialIntro)}</p>
           
-          <div class="social-feeds-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px;">
-            <!-- Facebook Iframe Feed -->
-            <div class="feed-column" style="background: #fff; padding: 20px; border-radius: var(--border-radius-sm); box-shadow: 0 4px 20px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
+          <div class="social-feeds-container" style="display: flex; justify-content: center; gap: 30px;">
+            <!-- Facebook Iframe Feed Only -->
+            <div class="feed-column" style="background: #fff; padding: 20px; border-radius: var(--border-radius-sm); box-shadow: 0 4px 20px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px;">
               <h3 style="font-family: 'Poppins', sans-serif; font-size: 1.15rem; color: #1877F2; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
                 <i class="fa-brands fa-facebook"></i> Facebook Timeline
               </h3>
@@ -226,55 +226,6 @@ export function renderMedia(container) {
               </div>
               <a href="https://www.facebook.com/snglobalgroup/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-navy btn-sm" style="margin-top: 15px; display: inline-flex; align-items: center; gap: 8px;">
                 <i class="fa-brands fa-facebook"></i> ${t(text.visitFacebook)}
-              </a>
-            </div>
-
-            <!-- LinkedIn Iframe Feed -->
-            <div class="feed-column" style="background: #fff; padding: 20px; border-radius: var(--border-radius-sm); box-shadow: 0 4px 20px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
-              <h3 style="font-family: 'Poppins', sans-serif; font-size: 1.15rem; color: #0A66C2; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-brands fa-linkedin"></i> LinkedIn Company Hub
-              </h3>
-              
-              <!-- Real Embedded LinkedIn Post Iframe -->
-              <div class="linkedin-embeds-wrapper" style="width: 100%; display: flex; flex-direction: column; gap: 15px; height: 600px; overflow-y: auto; padding-right: 8px;">
-                <!-- Mockup corporate feed structure representing actual linked posts directly referencing the page -->
-                <div class="linkedin-post-card" style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-align: left; background: #fff;">
-                  <div class="post-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
-                    <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--color-navy); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.8rem;">SN</div>
-                    <div>
-                      <h4 style="font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--color-navy);">SN Global Group LLC</h4>
-                      <p style="font-size: 0.7rem; color: #64748b; margin: 0;">American Holding Company • Baltimore, MD</p>
-                    </div>
-                  </div>
-                  <p style="font-size: 0.8rem; line-height: 1.4; color: var(--color-text-dark); margin-bottom: 12px;">
-                    We are pleased to introduce our expanded holding portfolio, combining bespoke luxury travel with premier health & life insurance coverage. Our offices at Baltimore are fully operational. Visit snglobalgroup.online to request a quote.
-                  </p>
-                  <div style="aspect-ratio: 16/9; background: #cbd5e1; border-radius: 4px; overflow: hidden; margin-bottom: 12px;">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80" style="width:100%; height:100%; object-fit:cover;">
-                  </div>
-                  <a href="https://www.linkedin.com/company/sn-global-group-llc/" target="_blank" style="font-size:0.75rem; color:#0A66C2; font-weight:600; text-decoration:none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> View on LinkedIn</a>
-                </div>
-
-                <div class="linkedin-post-card" style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-align: left; background: #fff;">
-                  <div class="post-header" style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
-                    <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--color-navy); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 0.8rem;">SN</div>
-                    <div>
-                      <h4 style="font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--color-navy);">SN Global Group LLC</h4>
-                      <p style="font-size: 0.7rem; color: #64748b; margin: 0;">American Holding Company • Baltimore, MD</p>
-                    </div>
-                  </div>
-                  <p style="font-size: 0.8rem; line-height: 1.4; color: var(--color-text-dark); margin-bottom: 12px;">
-                    Designed by our Travel Designers, explore Kyoto, Paris, or Dubai in absolute safety. Let's build your next bespoke travel itinerary.
-                  </p>
-                  <div style="aspect-ratio: 16/9; background: #cbd5e1; border-radius: 4px; overflow: hidden; margin-bottom: 12px;">
-                    <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80" style="width:100%; height:100%; object-fit:cover;">
-                  </div>
-                  <a href="https://www.linkedin.com/company/sn-global-group-llc/" target="_blank" style="font-size:0.75rem; color:#0A66C2; font-weight:600; text-decoration:none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> View on LinkedIn</a>
-                </div>
-              </div>
-
-              <a href="https://www.linkedin.com/company/sn-global-group-llc/" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-sm" style="margin-top: 15px; display: inline-flex; align-items: center; gap: 8px;">
-                <i class="fa-brands fa-linkedin"></i> ${t(text.visitLinkedIn)}
               </a>
             </div>
           </div>
