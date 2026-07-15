@@ -9,6 +9,7 @@ import { renderInsurance } from './components/insurance.js';
 import { renderBlog } from './components/blog.js';
 import { renderContact, initContactForm } from './components/contact.js';
 import { renderLegal, renderPrivacy, renderCookies } from './components/legal.js';
+import { renderMedia } from './components/media.js';
 
 // Simple "About" view directly in main.js to keep project organized
 function renderAbout(container) {
@@ -305,7 +306,8 @@ const routes = {
   '/contact': renderContact,
   '/legal': renderLegal,
   '/privacy': renderPrivacy,
-  '/cookies': renderCookies
+  '/cookies': renderCookies,
+  '/media': renderMedia
 };
 
 // Static Translation Sync function
@@ -404,6 +406,8 @@ function updateStaticTranslations() {
       link.innerText = isEn ? 'Privacy Policy (GDPR/CCPA)' : 'Politique de Confidentialité (RGPD/CCPA)';
     } else if (text === 'Gestion des Cookies' || text === 'Cookie Management') {
       link.innerText = isEn ? 'Cookie Management' : 'Gestion des Cookies';
+    } else if (text === 'Médiathèque' || text === 'Media Library') {
+      link.innerText = isEn ? 'Media Library' : 'Médiathèque';
     }
   });
 
@@ -568,6 +572,16 @@ function router() {
       description: {
         en: "Cookie policy and settings configuration for SN Global Group.",
         fr: "Politique d'utilisation et configuration des cookies pour SN Global Group."
+      }
+    },
+    '/media': {
+      title: {
+        en: "Media Center & Assets | SN Global Group",
+        fr: "Espace Médias & Ressources | SN Global Group"
+      },
+      description: {
+        en: "Browse the official media library of SN Global Group. High-definition images, official documents, and live Facebook/LinkedIn feeds.",
+        fr: "Parcourez la médiathèque officielle de SN Global Group. Images haute définition, documents officiels et flux Facebook et LinkedIn en direct."
       }
     }
   };
