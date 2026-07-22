@@ -145,6 +145,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check / keep-alive route (exempt from strict API rate limiting)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: Math.floor(process.uptime()), timestamp: new Date().toISOString() });
+});
+
 app.use('/api/', apiLimiter);
 app.use(globalLimiter);
 
@@ -662,6 +667,18 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+
+  // Auto Keep-Alive Self-Ping Routine (Pings every 10 minutes to prevent Render free-tier sleep)
+  const PING_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+  setInterval(async () => {
+    try {
+      const siteUrl = process.env.RENDER_EXTERNAL_URL || 'https://snglobalgroup.online';
+      const response = await fetch(`${siteUrl}/api/health`);
+      console.log(`[Keep-Alive] Self-pinged ${siteUrl}/api/health - Status: ${response.status}`);
+    } catch (err) {
+      console.warn(`[Keep-Alive] Self-ping error:`, err.message);
+    }
+  }, PING_INTERVAL_MS);
 });
 
 
